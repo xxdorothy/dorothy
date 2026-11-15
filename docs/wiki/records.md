@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-15
 spdx: GPL-3.0-only
 title: Records
 description: >-
@@ -285,6 +285,9 @@ first.
 - [Orchestration design](../specs/2026-11-02-orchestration-design.md):
   Specification. An MCP server running boxed Claude Code and Codex workers
   through acpx.
+- [Orchestration prototype](../reports/2026-11-15_orchestration-prototype.md):
+  Report. The two suspended prototype branches of Part A, what they build
+  and lack, the gate's departure from the spec and how to resume.
 - [Pi as her stewardship host](../notes/2026-11-03_pi-stewardship.md):
   Research. Why Pi was excluded, what it now offers and a proposed trial.
 - [Pi stewardship plan](../plans/2026-11-03_pi-stewardship.md): Plan. A herdr

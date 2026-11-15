@@ -1,11 +1,11 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-15
 spdx: GPL-3.0-only
 title: Orchestration
 description: >-
   Two separate subjects: the orchestration toolset designed for Dorothy,
-  not built, and the herdr tools that coordinate the agents developing her
+  not merged, and the herdr tools that coordinate the agents developing her
   today.
 tags:
   - wiki
@@ -25,7 +25,8 @@ tags:
 
 "Orchestration" names two different subjects in this repository. The
 first is a feature of Dorothy's own: a toolset by which she would run
-Claude Code and Codex workers. It is designed and not built. The second is
+Claude Code and Codex workers. It is designed, and prototyped only on
+unmerged branches. The second is
 how the agents that develop Dorothy are coordinated now, with herdr, a
 skill and some scripts. They are not the same work, but the spec places the
 first as an alternative to the second in time: it describes today's
@@ -41,7 +42,7 @@ the spec. The dated records of both are listed under
 
 ## Dorothy's own orchestration
 
-State: designed. Nothing of it is built.
+State: designed, and partly prototyped on branches that are not merged.
 
 - The roadmap has no ordered phase for it as of 2026-11-03: no
   "Orchestration" heading stands in [Ahead](../../roadmap.md#ahead). The
@@ -50,9 +51,11 @@ State: designed. Nothing of it is built.
   ([spec](../../specs/2026-11-02-orchestration-design.md#documentation));
   the roadmap does not yet say so, and only the roadmap orders work.
 - There is no `orchestra` package in `packages/`; the nine packages are
-  listed in [packages](../profiles/packages.md). No plan or report for it
-  exists in the records. Any prototype is local and unmerged, and is not
-  cited here.
+  listed in [packages](../profiles/packages.md). No plan for it exists in
+  the records. A prototype of Part A, up to the engine and short of the
+  server's tools, was suspended unmerged on two branches; the
+  [prototype report][prototype] says what they hold, where the gate departs
+  from the spec, and how to resume.
 - The spec is the only design record, with two research notes before it.
   Its decisions table records rulings made "with the user or by the
   coordinating agent", each with its cost if wrong
@@ -201,3 +204,4 @@ exist yet. Until it does, the skill's list is where the roles are named.
 [layer]: ../../notes/2026-11-01_agent-orchestration.md
 [harness]: ../../notes/2026-11-02_featherless-orchestrator.md
 [probe]: ../../notes/2026-11-02_featherless-orchestrator.md#the-orchestration-spec-and-a-feasibility-probe
+[prototype]: ../../reports/2026-11-15_orchestration-prototype.md
