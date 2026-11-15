@@ -27,3 +27,5 @@
   Route by budget: Codex, then Claude leaving room, the reserve, or wait
 - [Self-compaction](./self-compaction.md)
   Past 85% context, compact yourself at a turn boundary; say so
+- [Worktree add installs](./worktree-add-installs.md)
+  git worktree add runs bun install and the branch's prepare script
