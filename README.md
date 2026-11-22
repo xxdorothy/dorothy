@@ -1,6 +1,6 @@
 ---
 ctime: 2026-09-29
-mtime: 2026-11-14
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: "dorothy"
 description: "Conversational LLM interface"
@@ -21,789 +21,89 @@ tags:
 
 Conversational LLM interface
 
-Dorothy is a conversational assistant in the spirit of <https://claude.ai>,
-running on her own runtime, the Vercel AI SDK, which reaches Anthropic's
-Messages API with her own system prompt, and the other providers
-`config.toml` names.
+Dorothy is an assistant with a memory of her own: a chat in the terminal,
+and an identity and memory she carries into Claude Code, Codex and Pi. She
+runs on the Vercel AI SDK, reaching Anthropic and the other providers her
+`config.toml` names. The [wiki](./docs/README.md) explains her, subject by
+subject.
 
-## Prerequisites
+## Setup
 
-- Bun >=1.4
-- An Anthropic API key; `--claude` also needs Claude Code, signed in
-- For `--pi`, Node >=22.19.0 on `PATH` and a Featherless entry in the
-  chat route, with its key in `secrets.json`
-
-[mise](https://mise.jdx.dev) supplies Bun, sops, age and jq from
-`.config/mise/config.toml`, and runs the development tasks; Bun is the only
-runtime prerequisite, and `bun install` and `bun run dev` need no mise:
+Bun >=1.4 runs her from source. [mise](https://mise.jdx.dev) supplies Bun,
+sops, age and jq, and runs the development tasks. `--claude` needs Claude
+Code signed in; `--pi` needs Node >=22.19.0 and a Featherless key.
 
 ```sh
 mise install
-```
-
-## Installation
-
-```sh
 bun install
 ```
 
-## Authentication
+## Secrets
 
 `secrets.json` is committed, encrypted with
 [sops](https://github.com/getsops/sops) to the age key in
-`$XDG_CONFIG_HOME/sops/age/keys.txt` (default `~/.config/sops/age/keys.txt`).
-Dorothy loads it when a command needs credentials, keeping any nonempty
-value already set in the environment.
-Use sops's editor to set a credential as a JSON string:
-
-- `ANTHROPIC_API_KEY`: the key Dorothy's own calls spend, her chat, her
-  reviews and her compactions, through Anthropic's Messages API. A Max
-  plan's monthly API credits cover it.
-- `OPENROUTER_API_KEY`, `FEATHERLESS_API_KEY` and `HF_TOKEN`: keys for
-  the other providers her calls may be routed to (Models and providers,
-  below). A provider in `config.toml` names the one it uses.
-- `CLAUDE_CODE_OAUTH_TOKEN`: a Claude Pro/Max subscription token, minted
-  by running `claude setup-token`, for the eval's `via = "claude"`
-  clients, which run Claude Code itself. `dorothy --claude` needs none: it
-  signs in as your own Claude Code does.
+`~/.config/sops/age/keys.txt` (under `$XDG_CONFIG_HOME` if set). Dorothy
+loads it when a command needs credentials; a nonempty variable already in
+the environment wins.
 
 ```sh
 sops edit secrets.json
 ```
 
-With more than one Claude account, keep each token under its own name
-beginning `CLAUDE_CODE_OAUTH_TOKEN`, such as
-`CLAUDE_CODE_OAUTH_TOKEN_CLAUDE2`, and choose the one eval spends by
-setting `DOROTHY_CLAUDE_TOKEN_VAR` to its name. A name with no such
-token stops eval before any model call.
+It holds `ANTHROPIC_API_KEY`; `OPENROUTER_API_KEY`, `FEATHERLESS_API_KEY`
+and `HF_TOKEN` for the other providers; `CLAUDE_CODE_OAUTH_TOKEN` for the
+evaluation's `claude` routes, or one per account under names that begin
+so, chosen by `DOROTHY_CLAUDE_TOKEN_VAR`; and `DOROTHY_MIRROR_KEY` and
+`DOROTHY_MIRROR_TOKEN` for her memory's encrypted mirror.
 
-Back up that age-key file somewhere off this machine: without it,
-`secrets.json` cannot be read. Never commit the age key. Sops also accepts
-another key-file path through `SOPS_AGE_KEY_FILE`.
-
-A new machine needs its own age key. Add its public recipient to
-`.sops.yaml`, then, on a machine that can already decrypt the file, run:
-
-```sh
-sops updatekeys secrets.json
-```
-
-Commit the updated `.sops.yaml` and `secrets.json` so the new machine's
-key can decrypt them. Back up its age key too.
-
-## Usage
-
-Bun runs the source directly; there is no build step:
-
-```sh
-bun run dev -- "What is your name?"
-```
-
-`bun start` runs the same source. Either streams one reply to stdout as it is
-generated, in character as Dorothy per the system prompt in
-`packages/agent/src/persona.ts`. A prompt that starts with a dash follows `--`,
-as in `bun run dev -- -- "-v means?"`; any other leading option is refused
-rather than sent, and `--help` prints the usage.
-
-Run with no argument for a chat in the terminal:
-
-```sh
-bun run dev
-```
-
-Enter sends and Shift+Enter starts a new line (in terminals with the kitty
-keyboard protocol). Arrows, Home, End and the usual readline keys move and
-edit; Up and Down past the first or last line recall earlier messages, and
-Ctrl+G opens the draft in `$VISUAL` or `$EDITOR`. You can keep writing while
-a reply streams; Esc or Ctrl+C stops it. Ctrl+R shows the raw stream parts.
-Ctrl+C clears the draft, then quits; Ctrl+D or `/exit` quits too.
-Each reply ends with its tokens, timings, cost and what the chat has cost so
-far, and the statusline under the input shows the latest of them. Each chat
-is named by a four-word phrase shown in the header and saved as it happens,
-readable only by you, to `~/.local/share/dorothy/transcripts/<phrase>.jsonl`
-(`$XDG_DATA_HOME` if set).
-Continue one with:
-
-```sh
-bun run dev -- --resume <phrase>
-```
-
-Replies stream as plain text, then render as Markdown once complete:
-emphasis, lists, quotes, tables and code blocks, highlighted when labelled
-with a language.
-
-The chat needs a window of at least 40 columns and 20 lines, one more line
-for each extra statusline line; a smaller one shows only how large it needs
-to be. Both stats lines are set in `~/.config/dorothy/config.toml`
-(`$XDG_CONFIG_HOME` if set), read at startup:
-
-```toml
-[statusline]
-modules = ["chat-cost", "memory-cost", "cost", "in", "out", "ttft", "duration"]
-max-lines = 1
-
-[reply-stats]
-modules = [
-  "in", "cache-read", "cache-write", "out", "ttft", "duration", "cost",
-  "chat-cost",
-]
-max-lines = 1
-```
-
-Modules show left to right as far as the width allows, then on up to
-`max-lines` lines (at most 5); those that still do not fit are left out from
-the right. An empty `modules` hides the line; for the statusline it also
-frees its rows, so the window then needs only 19 lines. A mistake in the
-file shows as a warning, naming its line, and the defaults apply, but for
-the routing tables below: a mistake there, or a file holding them that
-does not parse, is an error.
-
-### Models and providers
-
-Each of her calls has a role: `chat`, `review`, `compaction`, and
-`maintenance`, for work to come. By default each runs on one Anthropic
-model: chat on `claude-opus-5-5`, reviews and compaction on
-`claude-sonnet-5-5`, maintenance on `claude-haiku-5-5`. `config.toml`
-can declare other providers and give each role an ordered list:
-
-```toml
-[providers.anthropic]
-kind = "anthropic"
-key = "ANTHROPIC_API_KEY"
-
-[providers.openrouter]
-kind = "openrouter"
-key = "OPENROUTER_API_KEY"
-
-[providers.featherless]
-kind = "featherless"
-key = "FEATHERLESS_API_KEY"
-
-[providers.hf]
-kind = "huggingface"
-key = "HF_TOKEN"
-
-[providers.ollama]
-kind = "local"
-base-url = "http://127.0.0.1:11434/v1"
-
-[models]
-chat = ["anthropic:claude-opus-5-5", "openrouter:<model>"]
-review = [
-  "anthropic:claude-sonnet-5-5",
-  { model = "featherless:<model>", price = [0.1, 0.1] },
-]
-```
-
-A call that fails on one model moves to the next and says so, unless it
-was cancelled or her reply had begun: once text has streamed or she has
-kept a fact, a failure ends the turn. A provider out of credit is skipped
-until its `retry-after`, or for five minutes, and a rate-limited model
-likewise. Each process (chat, the memory service) remembers its own
-refusals while it runs; when every model in a list is cooling, the one
-whose wait ends first is tried.
-
-| Kind | Reaches | What keeps her prompts |
-| --- | --- | --- |
-| `anthropic` | The Messages API, or a loopback `base-url`, written without the `/v1` Dorothy appends | Anthropic's commercial terms |
-| `openrouter` | `https://openrouter.ai/api/v1` | Only endpoints with zero data retention and data collection denied, asked on every request |
-| `featherless` | `https://api.featherless.ai/v1`, on its paid API plan | Featherless stores no prompts |
-| `huggingface` | `https://router.huggingface.co/v1` | Whichever provider Hugging Face routes to, some of which keep prompts; a suffix such as `org/model:featherless-ai` chooses one |
-| `local` | A loopback `base-url`, the server's full API root | This machine |
-
-- `key` names a `secrets.json` entry, never a value; only `local` may
-  leave it out. A key unset when a call runs fails that entry alone.
-- An entry is `provider:model`, split at the first colon, so
-  `openrouter:x/y:free` names the model `x/y:free`.
-- `price`, dollars per million tokens in and out, is for `featherless`,
-  `huggingface` and `local` entries; `[0, 0]` is free. OpenRouter reports
-  each call's cost, and Anthropic's models are priced from a table; any
-  other model costs $0, with a warning.
-- With no `[providers]`, `anthropic` is implied. A role left out of
-  `[models]` takes its default model on the provider named `anthropic`,
-  which must be of kind `anthropic`; without one, leaving a role out is
-  an error.
-- A model later in a list needs a context window no smaller than
-  `compaction.hard` (128,000 tokens by default), or a long chat fails on
-  it.
-- The Chat Completions kinds send no output limit, so each provider's
-  default applies (featherless's is 4,096 tokens), and a model that
-  thinks at length may spend it all before answering; Dorothy then warns
-  that the reply stopped at the model's output limit.
-- A plan's concurrency limit, such as featherless's, can refuse a chat
-  while a review or a compaction is running on the same model; a second
-  entry in the role's list answers instead.
-
-A mistake in these tables is an error, and so is a `config.toml` that
-cannot be read at all, as one with routing tables that does not parse
-is, because a default could send her requests where you did not mean:
-chat, a one-shot reply and `--dump-context` print it and exit 1; the
-memory service and Claude Code's hooks log it and review nothing;
-`--review-backfill` prints it and exits 1.
-
-### Memory
-
-Dorothy keeps short notes on each chat: a title, a sentence and a paragraph,
-which she writes herself in the background, after her first reply and again
-whenever the chat has been idle for a minute. Each new chat starts with her
-notes on earlier ones, the most salient (often and recently visited, and
-useful to her) in the most detail, within a budget. The notes sit beside each
-transcript as `<phrase>.meta.json`.
-
-```sh
-bun run dev -- --list              # what she remembers, ranked
-bun run dev -- --memory <phrase>   # correct, pin or hide a chat's notes
-bun run dev -- --tags              # her tags, as a tree
-bun run dev -- --edit-tags         # correct, merge or delete her tags
-```
-
-`--tags` needs the recall index to count conversations; it reports an
-error if the index cannot be opened.
-
-A note you change with `--memory` is yours and she never overwrites it;
-empty it to hand it back. Reviews cost tokens, which the `memory-cost`
-statusline module shows.
-
-She also tags each chat with up to five topics from a vocabulary she grows
-herself, reusing a tag where one fits. Tags never sit in her context: she
-lists them, and searches by them, when she looks something up. The
-vocabulary is `~/.local/share/dorothy/tags.json` (`$XDG_DATA_HOME` if set).
-With `--edit-tags` you rename, describe, re-parent, merge or delete any tag,
-and a tag you delete stays deleted; a `Tags:` line in `--memory` sets a
-chat's tags, which she then keeps.
-
-When her notes are not enough, Dorothy looks: she searches her past chats
-by the words in them and opens the passage that matched, and each lookup
-shows as a dim `⌕` line. Her next review judges whether what she read
-served her, and chats that served her rank higher in her memory. The
-search index is derived from the transcripts and notes, kept at
-`~/.cache/dorothy/recall.sqlite` (`$XDG_CACHE_HOME` if set), and can be
-deleted at any time. The same search is an MCP server that any MCP client
-can start:
-
-```sh
-bun run dev -- --recall-server
-```
-
-A long chat does not outgrow Dorothy's context. Once it passes a threshold,
-she compacts it while you are idle: the oldest turns leave her context in
-clusters, split where the topic changes, each summarised by her in an
-abstract that stays with her for the rest of the chat. The newest turns stay
-word for word. She can open any cluster to read it exactly again, shown as a
-dim `⌕ recollected` line, and her notes on other chats shrink to make room
-as the chat grows. The abstracts sit in the chat's notes; `--resume` starts
-from them.
-
-```toml
-[compaction]
-enabled = true  # false: no compaction at all
-soft = 64000    # context tokens before compacting at idle
-hard = 128000   # context tokens before the next message waits for it
-tail = 16000    # newest turns kept word for word, in tokens
-```
-
-The `[memory]` table of `config.toml` sets it up:
-
-```toml
-[memory]
-enabled = true       # false: no notes in chats and no reviews
-budget = 4000        # estimated tokens of notes per chat, 200 to 20000
-idle-seconds = 60    # idle time before a review, 10 to 3600
-half-life-days = 30  # how fast a chat fades, 1 to 3650
-catch-up = 5         # unreviewed chats reviewed per launch, 0 to 50
-recall = true        # false: Dorothy cannot search past chats
-extract-cap = 10     # knowledge a review may propose from a chat, 1 to 100
-```
-
-Her memory keeps its own history. The data directory is a git repository:
-each review, edit, compaction and turn is a commit, checked before it is
-made, and a file found broken is put back as it last was, with the broken
-copy kept under `broken/` and a warning. Git is used when it is installed,
-and a built-in implementation when it is not.
-
-```sh
-bun run dev -- --history [<path>] [-n 20]  # what changed, newest first
-bun run dev -- --restore <path> [<rev>]    # put a file back as it was
-bun run dev -- --rollback <rev>            # notes and tags as they were
-bun run dev -- --check                     # lint every file
-bun run dev -- --mirror <url-or-path>      # set the sealed mirror
-bun run dev -- --recover <url-or-path>     # rebuild an empty data dir
-```
-
-Each `--history` line starts with the commit's short sha, which is what
-`--restore` and `--rollback` take as `<rev>`.
-
-Beside her notes on each chat, Dorothy keeps facts: what she knows of
-you, your work and what has worked, one Markdown file each under
-`knowledge/` in the data directory. A fact is personal or a project's, and a
-project is the git repository you are in, named by its `origin`. A
-project's facts are synced with its repository's `docs/memory/`,
-`.agents/memory/` or `.claude/memory/`, whichever it holds, in the format
-Claude Code's auto-memory reads, so its other contributors' agents read
-them too; personal facts never leave her store. Nothing is
-forgotten: a fact you retire leaves the repository and her context but
-stays searchable, and can be revived.
-
-```sh
-bun run dev -- --facts                        # what she knows, by scope
-bun run dev -- --retire personal/<name>       # retire a fact
-bun run dev -- --retire --from <phrase>       # retire what a chat gave
-bun run dev -- --revive personal/<name>       # bring it back
-bun run dev -- --verify k:personal/<name>     # confirm what a model gave
-bun run dev -- --sync [<path>]                # sync a project with its repo
-bun run dev -- --projects                     # the projects she knows
-```
-
-Knowledge is confirmed when you wrote it or verified it. What a model or
-a review wrote, an outside writer gave or a repository's files hold is
-not, since text from a page or a tool can reach it, and a model can
-write a repository's files. Your verification goes into the file sync
-exports, so another checkout or machine finds the piece confirmed while
-its words and title are as you verified them; one you wrote but never
-verified is not confirmed there, as a file does not say who wrote it.
-Each session's opening block puts unconfirmed knowledge in a section of
-its own, after all that is confirmed and ranked below all confirmed
-knowledge for the budget, as claims to weigh, never instructions;
-search, `open` and recall mark it the same way. `--verify` takes the id
-the block and `open` show, prints the title, description and body you
-are confirming, adds your `verified` entry and commits it to her history
-as yours; the piece is confirmed from the next session's block.
-
-Sync never commits: the files it writes are committed with your work.
-When a fact changed both in her store and in the repository, the
-repository's version is kept, and hers stays in her history.
-
-The history is pushed to a mirror off this machine, encrypted. The
-mirror must exist first: a private repository on a host, or for a local
-one `git init --bare /path/to/memory.git`. Then set it with `--mirror`:
-a mirror path is taken from where you run the command. Dorothy's checkout
-must hold `.sops.yaml` when `--mirror` makes `DOROTHY_MIRROR_KEY`, saved in
-that checkout's `secrets.json` through sops. A key is made only when none
-is set and secrets loaded successfully: it never replaces one, or makes
-one after bundles have been sealed. Commit the checkout's `secrets.json`
-afterwards; its values are encrypted. Keep a copy of the mirror key
-elsewhere, obtained from Dorothy's checkout with:
+Back up two keys off this machine, as nothing can read what they lock
+without them: the age key, and the mirror key, which this prints:
 
 ```sh
 sops decrypt --extract '["DOROTHY_MIRROR_KEY"]' secrets.json
 ```
 
-Without that key the mirror cannot be read. `--mirror` with no argument
-shows its status. Until a mirror is set, each launch reminds you, and a
-push is tried at each launch. An `https://` mirror is pushed with the
-token in `DOROTHY_MIRROR_TOKEN`, under git and the built-in implementation
-alike. For GitHub, use a fine-grained token for the mirror's repository
-alone, with read and write access to its contents. Set
-`DOROTHY_MIRROR_TOKEN` with `sops edit secrets.json`. Without a token,
-git uses your own credential helpers; the built-in implementation,
-which pushes only over `https://`, cannot push.
+A new machine needs its own age key. Add its recipient to `.sops.yaml`,
+then, on a machine that can decrypt, run `sops updatekeys secrets.json`
+and commit both files.
 
-```toml
-[history]
-enabled = true     # false: no history, no mirror
-push-seconds = 60  # at most one push per this many seconds, 10 to 86400
-```
-
-### Claude Code as Dorothy
-
-`--claude` runs your own Claude Code with Dorothy as its main agent: her
-identity, voice and manner, with Claude Code's tools. Everything after it
-goes to `claude`, which starts in the directory you ran it from:
+## Usage
 
 ```sh
-bun run dev -- --claude                    # Claude Code on this checkout
-bun run dev -- --claude -p "Who are you?"
+bun run dev                          # chat in the terminal
+bun run dev -- "What is your name?"  # one reply
+bun run dev -- --claude              # Claude Code, as Dorothy
+bun run dev -- --serve               # her memory service
+bun run dev -- --help                # every command
+bun run eval -- --help               # measuring her memory
 ```
 
-Bun runs `dev` only from a directory within this checkout, so for another
-project, call the entry point itself:
+Bun runs `dev` only inside this checkout; elsewhere, call the entry point:
 
 ```sh
 alias dorothy="bun $PWD/packages/cli/src/index.ts"  # from this checkout
-cd ~/some/project && dorothy --claude
 ```
 
-It starts a gateway on a local port and points Claude Code at it with
-`ANTHROPIC_BASE_URL`, passing your own as the gateway's upstream. The
-gateway adds Dorothy's identity to the main thread's requests and forwards
-everything else untouched; subagents stay Claude Code's own. Claude Code
-signs in as it always does: `--claude` reads none of Dorothy's `secrets.json`.
-
-To see what it sends, `--claude --dump-context` prints, as JSON, the first
-request Claude Code makes, with the gateway's rewrite applied. Arguments
-before `--` go to `claude`, the message after it (`hi` if none):
-
-```sh
-bun run dev -- --claude --dump-context
-bun run dev -- --claude --dump-context --model sonnet -- "Who are you?"
-```
-
-`claude` runs in print mode without saving its session, and the gateway's
-upstream is a stand-in on a local port, so nothing reaches the API. Print
-mode's request can differ a little from an interactive session's. A
-warning on stderr says if the gateway found no marker to replace.
-
-### Pi as Dorothy
-
-`--pi` runs the published Pi coding agent (1.5.0, pinned by the CLI) in
-its own terminal interface, as Dorothy: her identity beside Pi's system
-prompt, her memory tools over MCP, her memory layer before each prompt,
-and its sessions recorded. It runs on the first Featherless entry of the
-chat route, or the one `--model <provider:id>` names; only that key is
-decrypted and given to Pi. Arguments after `--` go to Pi:
-
-```sh
-bun run dev -- --pi
-bun run dev -- --pi -- --resume
-bun run dev -- --pi --dump    # the redacted command, decrypting nothing
-```
-
-Its profile is `$XDG_CONFIG_HOME/dorothy/pi`, its sessions are below
-`$XDG_DATA_HOME/dorothy/pi/sessions`, and your preferences, keybindings
-and trust decisions there stay yours. Add `"pi"` to `[recording] hosts`
-for the sweep to catch up a session whose launcher was killed. The
-[verification report](./docs/reports/2026-11-03_pi-delivery.md) records
-what was tested, offline and against Featherless.
-
-`--steward <registry>` gives Pi the declared trial workers' tools, and a
-normal `--pi` needs neither herdr nor a worker login. The bounded
-stewardship trial's runner and offline tests are built, and its native
-mixed-worker run passed all eleven checks at `b38393c` in one controlled
-Linux API-backed cycle, merged in #131. Open-weight spending was
-authorized with an explicit numeric cap per run. The runner never copies
-a subscription credential; synthetic API-backed homes were a disclosed
-deviation. The
-separate production Pi smoke completed under isolated configuration. The
-[report](./docs/reports/2026-11-03_pi-stewardship.md) records the
-offline evidence, the proxy lifecycle fix and the bounded acceptance.
-
-### Her memory as a service
-
-`--serve` runs her memory as a service, which every harness's adapter
-and her own tools reach: an opening block for each session, recall for
-a message, four MCP tools (`brief`, `search`, `open`, `remember`) and
-records of each session. It listens on `127.0.0.1:4774`; the first
-`--mcp` starts it if it is not running. It runs the code it started
-with: after upgrading Dorothy, stop it and start it again.
-
-```sh
-bun run dev -- --serve
-bun run dev -- --mcp     # MCP over stdio, for a harness that launches it
-```
-
-To reach it from your other devices, list their addresses in
-`config.toml` and give each device a token, which it keeps in
-`~/.local/state/dorothy/device-token` (`$XDG_STATE_HOME` if set), mode
-0600, with `DOROTHY_MEMORY_URL` naming the service:
-
-```toml
-[service]
-port = 4774
-listen = ["100.64.0.1"]  # a private network's address, such as Tailscale's
-```
-
-`DOROTHY_MEMORY_URL` must use an address listed in `listen` (or
-`127.0.0.1`): a request to any other name gets 421 and its records wait.
-
-```sh
-bun run dev -- --serve --token-add laptop     # shown once
-bun run dev -- --serve --token-revoke laptop
-```
-
-The service serves no TLS: keep it on a private network, which encrypts
-the traffic, or behind a proxy that does. A request from loopback needs
-no token, so a local proxy or tunnel that forwards to `127.0.0.1` makes
-remote traffic look local: do not run one in front of it.
-
-A harness's hook may name a Claude Code transcript, which the service
-reads only under the `projects` directory of `CLAUDE_CONFIG_DIR` (else
-`~/.claude`) as the service found it. With another account's directory,
-list it too:
-
-```toml
-[service]
-claude-dirs = ["/home/me/.config/claude-2"]
-```
-
-### Recording other harnesses
-
-Her memory can also take in the sessions your other harnesses keep:
-Claude Code, Codex, Hermes Agent and Pi (her own Pi sessions alone), read
-from their own stores, which are only read, never written. Name the ones
-to record in `config.toml`; none is recorded by default:
-
-```toml
-[recording]
-hosts = ["claude-code", "codex"]  # claude-code, codex, hermes, pi
-sweep-seconds = 300               # between sweeps, 10 to 86400
-```
-
-The service sweeps those hosts when it starts and then every
-`sweep-seconds`, and logs a line of counts each time. A store moves with
-its harness's own variable where it has one (`CLAUDE_CONFIG_DIR`,
-`CODEX_HOME`, `HERMES_HOME`); another Claude Code account is listed in
-`[service] claude-dirs`. Each session becomes one conversation, each
-event recorded once, and the service extracts knowledge from it once it
-has been idle. A session whose directory is a git repository joins that
-project; one without a directory is personal.
-
-The first sweep of a host notes its time. The service records whole, and
-queues for extraction, any session with events after it, so a large live
-backlog is reviewed, each review a model call. Sessions whose events all
-precede it wait, and `--sweep --backfill` records them. Conversations it
-creates are marked durably so that no knowledge is extracted from them;
-ones already recorded live keep their review eligibility. A live append
-clears a backfill mark. Without the service,
-`--sweep` runs one sweep and prints a host and a count a line:
-
-```sh
-bun run dev -- --sweep               # sweep once
-bun run dev -- --sweep --backfill    # record the backlog too
-```
-
-A session that cannot be read is recorded up to the record that failed,
-the rest is kept aside, and the next start tells of it. `--sweep
---reread` reads such sessions again and says which now read to the end;
-`--sweep --dismiss <host> <session>` stops the notice. Claude Code's own
-are `--claude-hook --reread` and `--dismiss <session>`.
-
-A conversation recorded by `--sweep --backfill` carries that durable mark,
-and its notes stay empty: no title, abstract, tags or knowledge. `dorothy
---review-backfill [-n | --count <count | all>]` reviews them in batches,
-the newest `-n` (25 by default) by their last event, on the reviewer's
-model and with the credentials her other reviews use, her API key. Each
-batch spends API credits, so run one, watch your spend, then run the next:
-
-```sh
-bun run dev -- --review-backfill -n 3    # a small batch first
-bun run dev -- --review-backfill -n all  # every one, in batches of 25
-```
-
-`-n all` repeats batches of 25 until none is left, passing over a
-conversation another process holds rather than letting it fill a batch.
-A stopped pass exits 75, for a wrapper to run again once limits lift; a
-pass that finds every marked conversation held says so and exits 0.
-
-It prints `<phrase>: <outcome>` a conversation, then a total. An outcome
-is `reviewed`, `marked` (nothing to extract), `unchanged` (the reviewer
-wrote nothing, as during a backoff), `held` (another process is reviewing
-it) or `failed`; the command exits 1 when none was reviewed or marked and
-one failed. A failed model call stops the batch, with a line saying why and
-exit 1: that conversation keeps its mark and the rest stay untouched, for a
-later run. The command takes the review claim a chat or a hook takes,
-which keeps both off the conversation while it is reviewed, but not the
-service, which reviews only conversations a live record queued. A review
-that fails otherwise (its notes, a save) leaves the mark cleared, and a
-chat's catch-up retries it, not the service.
-
-Her knowledge lives in `knowledge/` in the data directory, one Markdown
-file each in the [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md),
-which you may read and edit; `facts/` is moved there once.
-
-### Measuring her memory
-
-`bun run eval` measures her memory on questions drawn from her own
-data, as [the evaluation's
-spec](./docs/specs/2026-10-18-memory-evaluation-design.md) describes.
-It works on a copy: take a snapshot into a work directory of your
-choosing, kept as private as the data directory, since the copy, the
-questions and the reports hold her data in clear.
-
-```sh
-bun run eval -- snapshot --from ~/.local/share/dorothy --work ~/eval
-bun run eval -- mine --work ~/eval     # questions her own reads answer
-bun run eval -- run --work ~/eval --retrieval-only
-```
-
-`mine` and a retrieval-only run need no model. To draft questions of
-LongMemEval's types and to answer and judge them, name a model for each
-role in `~/eval/eval.toml`. Use your Claude or ChatGPT plan through the
-`claude` or `codex` CLI before either vendor's API. Each role chooses its
-route with `via`: `"api"` by default, `"claude"` or `"codex"`. API roles
-use any OpenAI-compatible Chat Completions endpoint. For example:
-
-```toml
-[models.generate]
-via = "claude"
-model = "claude-haiku-5-5"
-
-[models.answer]
-via = "codex"
-model = "gpt-6.1-terra"
-effort = "medium"
-
-[models.judge]
-base-url = "https://openrouter.ai/api/v1"
-model = "google/gemini-4-argon"
-key = "OPENROUTER_API_KEY"
-```
-
-Only API roles accept `base-url` and `key`, which names an environment
-variable. CLI roles take `model`; Codex also takes `effort`, defaulting
-to `"medium"` rather than your Codex setting. Its values are `"none"`,
-`"minimal"`, `"low"`, `"medium"`, `"high"` and `"xhigh"`, subject to the
-model's support. `effort` on another route is an error. Any role takes
-`timeout-seconds`, from 1 to 3600, the time one attempt may take before
-it fails; 120 where unset. A slow judge, such as Codex at high effort,
-wants more: a timed-out call counts as a miss.
-
-Claude uses a fresh `CLAUDE_CONFIG_DIR`. `--setting-sources ""` disables
-settings sources, `--strict-mcp-config` limits MCP to explicitly supplied
-configuration (none here), `--tools ""` disables tools, and
-`--no-session-persistence` disables saved sessions. Its system prompt
-comes from a private file, with a neutral prompt when the role supplies
-none.
-
-Codex's `--ephemeral` avoids saved session files, `-s read-only` selects
-the sandbox for model commands, and `--skip-git-repo-check` allows a
-temporary directory outside a repository. `--ignore-user-config` skips
-`$CODEX_HOME/config.toml`; `--ignore-rules` skips user and project
-execpolicy `.rules` files. `project_doc_max_bytes=0` sets the project
-document byte limit. Codex keeps the real HOME and CODEX_HOME for login.
-Exclusion of `hooks.json`, skills and global `AGENTS.md` has not been
-verified; those may still affect a call.
-
-Both CLIs run in temporary working directories and receive the request
-on stdin. Their child environments contain only PATH, HOME and their
-route's login/config variables. SIGINT, SIGTERM and SIGHUP stop every
-active CLI process group and remove its private temporary directory.
-
-Install each subscription CLI on PATH; a missing CLI stops the command
-before any call. For Claude, set
-`CLAUDE_CODE_OAUTH_TOKEN` with `sops edit secrets.json`; only the Claude
-child receives it. Codex uses your saved ChatGPT login, including
-`CODEX_HOME` when set. Set API key variables such as `OPENROUTER_API_KEY`
-with `sops edit secrets.json` too. The commands load this checkout's
-secrets before calling a model, with no wrapper:
-
-```sh
-bun run eval -- generate --work ~/eval --count 300
-bun run eval -- review --work ~/eval   # accept, edit or reject each
-bun run eval -- run --work ~/eval --dry-run
-bun run eval -- run --work ~/eval
-bun run eval -- compare --work ~/eval <run> <run>
-```
-
-These send passages of her data to the providers you name; a local
-server (llama.cpp, Ollama) keeps them home. The judge and the generator
-must support structured output. `--max-calls` caps the calls of
-`generate` or `run`, and a run stopped by it resumes with
-`--resume <run>`, the id the run printed; `--dry-run` beside it counts
-only what the run has left. A failed call counts as a miss, except that
-a plan's usage limit (Claude's or Codex's) stops the run or `generate`
-instead, keeping what is done: `run` then resumes with `--resume` after
-the reset. Either exits 75 (EX_TEMPFAIL) so a wrapper can wait and go
-on; a stop at `--max-calls` exits 0. `--resume latest` takes the run
-begun last, and `--models <file>` reads another file in place of
-`~/eval/eval.toml`, on `generate` and `run`, a relative path from where
-you run it. So a wrapper can run
-`run --work ~/eval --models models.toml --resume latest` after each 75,
-until the run ends; with no run to resume it says so and writes nothing.
-A system's ranked items are the ones that fit its budget, so recall at 5
-and 10 falls with a smaller
-`--budget`. Each run's report is `~/eval/runs/<run>/report.md`, and
-`bun run eval -- <command> --help` lists a command's options.
-
-`--systems` takes `dorothy`, `lexical`, `full` and `cited`, the first
-three by default, each with any options after colons:
-`dorothy:block=0.2:order=knowledge-first` sets the opening block's
-share and how knowledge and conversations interleave (`alternate`, the
-default); `cap`, `seeds` (`search` or `overlap`), `dedupe` (`on` or
-`off`) and `knowledge` (`capped`, the default, or `whole`) the rest.
-`cited` is given each question's evidence, a ceiling for passage
-selection. Each record
-and report counts four stages: evidence found by search, delivered as a
-passage or knowledge, delivered or only noted in the block, and
-covered: the share of the gold answer's words in what was delivered of
-its evidence.
-
-`review` shows up to 6,000 characters of each cited conversation, or
-`--evidence <chars>`. An agent can screen the drafts for you: its
-decisions, one JSON line each, `{"id", "decision", "reason"}` with a
-decision of `accept`, `reject`, `edit` or `unsure` (an `edit` adds any of
-`question`, `answer` and `evidence`), are applied with review's own
-checks, and a line that fails them (a key it does not know, or an edit
-that gives nothing or changes nothing, among them) is reported and
-skipped:
-
-```sh
-bun run eval -- review --work ~/eval --apply decisions.jsonl \
-    --reviewer agent-1 --dry-run   # drop --dry-run to write
-```
-
-It exits 1 if any line had a problem. An `unsure` leaves the draft for
-you. `~/eval/reviews.jsonl` logs every decision, yours as `owner`, with
-who made it, any new id and the reason; your edits in `review` are
-logged with the old id and the new, though the draft stays a draft.
-
-To give an agent the drafts in files, `review --render <dir>` writes
-them to `<dir>/drafts-1.md` and on, each with the evidence it cites.
-`--batches <n>` (1 to 100) splits them into that many parts, the larger
-first, and `--source <model>` takes only the drafts that model
-generated; with none, it says so and writes nothing. Then check the
-agents' work: `review --spot-check <file>` writes the drafts they left
-unsure and, of each agent, up to `--per <n>` (15 by default) accepts
-chosen at random, each with who decided it and how. An accept you
-disagree with goes back to the drafts with
-`review --reopen <id> --reason <why>`, logged as a `reopen` of yours,
-for you or an agent to decide again. Each of `--apply`, `--render`,
-`--spot-check` and `--reopen` stands alone.
-
-Each generation adds reported input and output tokens by role to its
-`~/eval/generated.json` entry; older entries without `tokens` remain
-readable. A run saves role totals in `run.json` and its report's
-"Tokens by role" table, including judge usage. Totals accumulate across
-capped runs and resumes. The system cost table counts answer tokens.
-Only reported usage is counted: a CLI that gives no usage contributes
-zero. An older run has no role totals; resuming it marks new totals as
-partial because earlier calls were not recorded.
-
-### Development mode
-
-For the people building her, `--dev` goes before a chat, a `--resume` or a
-prompt. Dorothy then says she is in development mode, so her notes on the
-chat record it, and describes her context in full when asked.
-
-```sh
-bun run dev -- --dev "What is in your context?"
-bun run dev -- --dump-context [--resume <phrase>] [message...]
-```
-
-`--dump-context` prints, as JSON, the exact request a chat would send first:
-the same notes, history and memory tools, exactly as Dorothy builds them,
-her recall tools' schemas included. It goes to a stand-in on a local port,
-so nothing reaches the API and no tokens are spent. `--dev --dump-context`
-dumps development mode.
-
-## CI
-
-`.github/workflows/ci.yaml` calls the shared
-[standard workflow](https://github.com/chewygumxx/.github#standard-workflow):
-commitlint, the header sync, generic lint and format checks for workflows,
-shell and zsh scripts, TOML, YAML and `.editorconfig`, and the metadata sync.
-This repository's own `bun run check` follows, against the commit the header
-sync pushed.
+Her data is in `~/.local/share/dorothy` and her caches in
+`~/.cache/dorothy`. Her settings are in `~/.config/dorothy/config.toml`,
+read at startup: the status lines, providers and model routes,
+compaction, memory, history, the service and recording. Each location
+moves with its `XDG_*` variable. The wiki's
+[models and routing](./docs/wiki/topics/models-and-routing.md) and
+[memory](./docs/wiki/topics/memory.md) explain the settings, and
+[`config.ts`](./packages/core/src/config.ts) parses them.
 
 ## Development
 
-The code is eight Bun workspace packages under `packages/` (`agent`, `cli`,
-`core`, `eval`, `gateway`, `identity`, `memory` and `tui`), linked by Bun's
-isolated linker; [`AGENTS.md`](./AGENTS.md) and each package's own describe
-them. The [wiki](./docs/README.md) explains each subsystem, the decisions
-behind it and what comes next.
+[`AGENTS.md`](./AGENTS.md) and each package's own describe the nine
+workspace packages under `packages/`.
 
-- `bun run dev` and `bun run start` run the CLI from source
-  (`packages/cli/src/index.ts`).
-- `mise run commit` composes a commit interactively.
-- `mise run check` (or `bun run check`) runs the type check, the linters,
-  the format checks and the tests that CI runs; `mise tasks ls` lists the
-  rest, defined in `.config/mise/tasks/`.
-- `mise run test` runs the `bun test` suite alone.
-- `mise run format` applies every formatter.
+- `mise run check` (or `bun run check`): everything CI runs.
+- `mise run test`: the tests alone; `mise tasks ls`: the rest.
+- `mise run commit`: compose a commit.
 
-The pre-commit hook runs `mise run check --staged`, which lints the staged
-files, runs the tests, and rejects em dashes and plaintext values in any env
-file.
-The commit-msg hook runs commitlint.
+The pre-commit hook runs `mise run check --staged`, and the commit-msg
+hook commitlint. CI runs the shared standard workflow, then
+`bun run check`.
 
 <!-- vim:set expandtab shiftwidth=2 filetype=markdown foldlevel=3: -->
