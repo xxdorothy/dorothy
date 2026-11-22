@@ -19,21 +19,6 @@
 
 min_version = "2026.11.4"
 
-# ---------
-# Monorepo
-# ---------
-
-# Project identification and metadata (proj_* vars, XXDY_PROJ_* env), defined
-# once by the xxdy monorepo: its local copy when this checkout sits in one,
-# otherwise, as in CI, the published copy.
-include = [
-    """{% if (config_root ~ '/../../.config/mise/config.toml') is file -%}
-{{ config_root }}/../../.config/mise/project.toml
-{%- else -%}
-git::https://github.com/xxdorothy/.config.git//mise/project.toml?ref=main
-{%- endif %}""",
-]
-
 # ------
 # Tools
 # ------
