@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-15
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: Records
 description: >-
@@ -406,6 +406,11 @@ first.
   plan](../plans/2026-11-14_repo-config.md): Plan. Settings dropped and
   fact sync following a moved directory, then memory, the skills package,
   the skills array and the ignores, over two pull requests.
+
+- [Unfinished work before the next
+  phase](../reports/2026-11-22_unfinished-work.md): Report. The open
+  Memory phase, revisions owed since 2026-11-11, the user's rulings, a
+  planned split and housekeeping.
 
 ## Related
 
