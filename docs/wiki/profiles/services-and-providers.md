@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-04
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: Services and providers
 description: >-
@@ -79,7 +79,7 @@ Used. Dorothy's first provider and the default of every role.
 - A subscription is used where the terms are read to allow it:
   `dorothy --claude` runs the user's own `claude` login behind her gateway,
   and the evaluation's `via = "claude"` route drives the `claude` CLI
-  ([README](../../../README.md#measuring-her-memory)).
+  ([eval's guide](../../../packages/eval/AGENTS.md)).
 
 The user's reason for wanting more than Anthropic is recorded: the
 conversation of 2026-11-01 begins from Anthropic's content limits and a

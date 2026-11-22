@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-11
-mtime: 2026-11-14
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: Build configuration
 description: >-
@@ -24,7 +24,7 @@ tags:
 [Wiki home](../../README.md)
 
 This page holds the reasoning the repository's configuration no longer
-carries. By the root [`AGENTS.md`](../../../AGENTS.md#data-by-function),
+carries. By the root [`AGENTS.md`](../../../AGENTS.md#rules),
 a configuration keeps its directives, labels, reference URL and any
 one-line why; anything longer is here, a section per tool.
 [`.config/AGENTS.md`](../../../.config/AGENTS.md) lists the tools

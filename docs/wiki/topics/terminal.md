@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-03
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: The terminal
 description: >-
@@ -59,8 +59,7 @@ Three modes start from `parseArgs`, which takes whether the input is a
 terminal: `dorothy "prompt"` streams one reply to standard output;
 `dorothy` in a terminal opens the chat; `dorothy --resume <phrase>` opens it
 seeded from a saved transcript. Without a terminal and without a prompt it
-prints usage. The root README gives the commands
-([README](../../../README.md)).
+prints usage, which `dorothy --help` prints too.
 
 A chat is named by a four-word phrase from the `niceware` list, shown in the
 header, and saved as it happens as a transcript under the user's data

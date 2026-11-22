@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-03
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: Models and routing
 description: >-
@@ -31,9 +31,9 @@ SDK type. Each call has a role, each role a route of one or more models, and
 a call that fails on one model moves to the next. This page explains that
 machinery as it is built. The providers behind it, with their prices and
 terms, are on
-[services and providers](../profiles/services-and-providers.md); setting up
-routes is in the root README's
-[Models and providers](../../../README.md#models-and-providers).
+[services and providers](../profiles/services-and-providers.md);
+[`routing.ts`](../../../packages/core/src/models/routing.ts) parses the
+routes.
 
 The scope is her own calls. `dorothy --claude`, `--codex` and the other
 hosts run the host's own model, not a route of hers; the spec put them out of
@@ -103,8 +103,7 @@ both the same model
 
 A provider is declared in `config.toml`'s `[providers.<name>]` and has a
 kind, one of five. The kind fixes the wire, the base URL and the reason it
-may receive her requests
-([README](../../../README.md#models-and-providers)):
+may receive her requests:
 
 - `anthropic`: the Messages API, `https://api.anthropic.com` or a loopback
   `base-url`, written without the `/v1` that Dorothy appends. A base URL

@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: Decisions
 description: >-
@@ -1453,6 +1453,24 @@ The machinery behind these rules is on
 - **Sources**:
   [repository configuration spec](../specs/2026-11-14_repo-config.md#status-and-intent),
   [plan](../plans/2026-11-14_repo-config.md).
+
+### Agents' commits name their configuration and session
+
+- **Context**: The root `AGENTS.md` forbade agent trailers, as the user
+  disliked a vendor's advertisement in the log. A commit then gave no way
+  back to the session, transcript or usage that made it.
+- **Alternatives**: No trailers, as before; or the harness's own
+  attribution, which advertises and names no session.
+- **Choice**: The user, on 2026-11-22, lifted the rule. An agent's commit
+  ends with `Agent`, `Model`, `Effort` and `Session` trailers, the last
+  the session's UUID, and nothing advertising a product. A harness's
+  attribution setting stays the user's.
+- **Reason**: The session's UUID finds its archived transcript and token
+  use, which the measurement of agentic work needs.
+- **Cost**: Four lines a commit, written by the agent; nothing yet checks
+  them.
+- **Standing**: current ([`AGENTS.md`](../../AGENTS.md#commits)).
+- **Sources**: the user, 2026-11-22.
 
 ## Related
 
