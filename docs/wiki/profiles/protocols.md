@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-22
 spdx: GPL-3.0-only
 title: Protocols
 description: >-
@@ -26,7 +26,7 @@ tags:
 
 Dorothy is built to speak standard protocols, with any SDK's types at a
 thin edge (the rule is in the root
-[AGENTS.md](../../../AGENTS.md#working-rules)). This page profiles each
+[AGENTS.md](../../../AGENTS.md#rules)). This page profiles each
 protocol or format the architecture uses or a proposal names: what it is,
 where she meets it, and its state. The states are built (code and tests
 exist), designed (a spec chooses it, nothing is in code), and compared
