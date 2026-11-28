@@ -1,13 +1,8 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
-    "extends": ["@chewygumxx/biome-config"],
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "extends": ["@chewygumxx/biome-config/configs/recommended"],
     "files": {
-        "includes": [
-            "**",
-            "!skills-lock.json",
-            "!secrets.json",
-            "!packages/cli/assets/pi/vendor"
-        ]
+        "includes": ["!**/*.yaml", "!**/*.yml", "!**/*.md"]
     },
     "linter": {
         "rules": {

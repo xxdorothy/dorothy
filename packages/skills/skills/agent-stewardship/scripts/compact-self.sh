@@ -45,6 +45,7 @@ pause=${DOROTHY_COMPACT_PAUSE:-3}
 # herdr takes no `--`, so text beginning with `-` could pass for an option.
 case $instructions in
 -*) instructions=" $instructions" ;;
+*) ;;
 esac
 
 # A finished turn reads idle in a pane someone is looking at, and done in

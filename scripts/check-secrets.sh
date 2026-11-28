@@ -34,6 +34,7 @@ check_file() {
         reject "$1" 'env file names are prohibited'
         return 1
         ;;
+    *) ;;
     esac
 
     # --tracked rejects deleted tracked files; --staged skips staged deletions.
@@ -60,6 +61,7 @@ check_file() {
             return 1
         fi
         ;;
+    *) ;;
     esac
 
     # Match a key shape, not prose that merely names its prefix.

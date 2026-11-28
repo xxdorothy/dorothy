@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Repository workflow
 description: >-
@@ -31,11 +31,11 @@ test, the test is named, since a rule only prose states can drift.
 
 ## Package boundaries
 
-Dorothy is eight Bun workspace packages under `packages/`. `core` holds the
+Dorothy is nine Bun workspace packages under `packages/`. `core` holds the
 contracts the others meet on and `identity` who Dorothy is; `memory` and
 `tui` depend on `core` alone, `agent` and `gateway` on it and `identity`,
-never on each other, `eval` on `core` and `memory`; `cli` on all but
-`eval`, and wires them. A package exports only the
+never on each other, `eval` on `core` and `memory`; `skills` is independent;
+`cli` depends on all but `eval`, and wires them. A package exports only the
 entry points its `package.json` names and imports only what it declares,
 as Bun's isolated linker fails an undeclared or internal import, and
 `workspace.test.ts` pins the graph and the entry points. The graph, each
@@ -52,6 +52,12 @@ because the old links linger:
 rm -rf node_modules packages/*/node_modules && bun install
 ```
 
+The user retained the modular monorepository on 2026-11-29. No package
+or documentation extraction is a prerequisite for functional development.
+See the [settlement](../../reports/2026-11-29_monorepository-settlement.md)
+for task scope and optional graph tooling. Read package guidance and
+current wiki topics first; consult historical records on demand.
+
 ## Worktrees
 
 Work happens on a branch, in the main checkout or in a worktree. Where a
@@ -63,39 +69,45 @@ either, `AGENTS.md` wins. The
 [worktrees skill](../../../packages/skills/skills/worktrees/SKILL.md) holds the
 procedure to make, check, repair and remove one.
 
-A worktree shares neither dependencies, git hooks nor skill links with the
-main checkout, so one declared step sets it up whichever tool made it:
-`.husky/post-checkout` runs `bun install`, whose `prepare` links every
-skill and points auto memory at the worktree's own `docs/memory/`, so a
-memory written there is committed on its branch.
+A worktree shares git's hooks with the main checkout but neither
+dependencies nor skill links, so one declared step sets it up whichever
+tool made it: `scripts/hooks/post-checkout.sh` runs `bun install`, whose
+`prepare` links every skill and points auto memory at the worktree's own
+`docs/memory/`, so a memory written there is committed on its branch.
+`prepare` registers that hook in git's configuration, beside hk's, since
+hk cannot load its configuration before `node_modules` exists.
 
 ## The checks
 
-`mise run check` runs everything CI runs, and `bun run check` is its shim.
-The tasks live in
-[`.config/mise/tasks/`](../../../.config/mise/tasks), and
-`mise tasks ls` lists them. `check` runs `lint` and `test` in parallel, and
-`lint` runs these kinds in parallel:
+`mise run check --all` runs everything CI runs, and `bun run check` is its
+shim. The tasks extend the `cgxx:` templates of
+`@chewygumxx/mise-tasks-config`, linked into `.config/mise/conf.d/`, as in
+the user's other repositories; Dorothy's own live in
+[`.config/mise/tasks/`](../../../.config/mise/tasks), and `mise tasks ls`
+lists them. `check` runs `lint` and `test`. `lint` runs hk's check hook
+and `format` its fix hook, with the steps
+[`.config/hk.pkl`](../../../.config/hk.pkl) takes from
+`@chewygumxx/hk-config`:
 
-1. `lint:types`: `tsc`.
-2. `lint:code`: Biome's linter and format check over the files git knows.
-3. `lint:md`: remark with `--frail`, then markdownlint, over every tracked
-   Markdown file.
-4. `lint:yaml`: Prettier and yamllint on YAML.
-5. `lint:toml`: Tombi on TOML.
-6. `lint:shell`: ShellCheck and shfmt on shell scripts.
-7. `lint:actions`: actionlint on GitHub workflows.
-8. `lint:editorconfig`: files against `.editorconfig`.
-9. `lint:secrets`: `scripts/check-secrets.sh`, refusing a plaintext
-   secret.
-10. `lint:emdash`: no em dash in a tracked file, or in a staged one under
-    `--staged`.
-11. `lint:header`: every file's house header and breadcrumb match its path.
+1. File by file: Biome (code and JSON; Markdown and YAML are left to
+   their own tools), remark and markdownlint, Prettier and yamllint,
+   Tombi, ShellCheck and shfmt, actionlint, editorconfig-checker, the
+   em dash check, and Dorothy's `secrets` step,
+   `scripts/check-secrets.sh`, refusing a plaintext secret.
+2. Whole project: `tsc`, the house headers, `package.json`'s key order,
+   and Dorothy's `skills` step, the skills against `skills-lock.json`.
 
-`test` is `bun test`, and `mise run test` runs the tests alone. `--staged`
-narrows `lint` and `check` to the staged files, except that `lint:types`
-and `lint:header` still check the whole project and the tests run whole.
-`format` applies the formatters and `commit` composes a commit. Bun's own
+hk selects the files: the changed ones by default, `--staged` the staged
+ones, `--all` every one; `--step <name>` runs one step. A step whose files
+and configuration are unchanged since it last passed is skipped from
+hk's cache. A change to shared configuration (`bun.lock`, `.config/`, the
+root tool configurations) widens the selection to every file, since it
+can change any result; `packages/` does not, being the code. Output is
+quiet: a passing run prints its task line alone, a failing one the
+failing step's diagnostics; `--verbose` shows hk's own. cspell, knip and
+secretlint are shared steps not yet adopted.
+
+`test` is `bun test`, and `mise run test` runs the tests alone. Bun's own
 layer, which needs no mise, keeps `dev`, `start`, `eval`, `skills` and
 `prepare` as `bun run` scripts. `.config/mise/config.toml` pins Bun and
 Node, since `--pi` and its tests run the published Pi under Node 22.19 or
@@ -107,13 +119,17 @@ lines), the skills and the memory index, `header.test.ts` the house header
 on every new file, and `docs.test.ts` the wiki's links, fragments and
 catalogue.
 
-The pre-commit hook runs `mise run check --staged`, and the commit-msg hook
-runs `mise run lint:commit`, which is commitlint. Each is one line, and
-`--no-verify` skips both, kept for a granular commit that cannot yet pass
-alone. Commits are granular, in Conventional Commits, with the package
+`mise install` installs hk's hooks. The pre-commit hook runs
+`mise run lint --staged`, with unstaged work set aside, and the commit-msg
+hook `mise run commit:lint`, which is commitlint. The tests stay out of
+the pre-commit hook: a full run takes minutes, which a granular commit
+cannot afford, so CI runs them on every push and `mise run check` before
+one. `HK=0` skips both hooks, kept for a granular commit that cannot yet
+pass alone. Commits are granular, in Conventional Commits, with the package
 names, `config`, `claude` and `api` as scopes and agent assets under the
-`ai` type, and no agent trailers. A header is at most 50 characters and a
-body line at most 72, limits that come from the shared commitlint config
+`ai` type. Agent commits carry provenance trailers as prescribed by
+[`AGENTS.md`](../../../AGENTS.md#commits). A header is at most 50 characters
+and a body line at most 72, limits from the shared commitlint config
 and that a plan's commit steps must keep too
 ([plan commit headers](../../memory/plan-commit-headers.md)).
 
@@ -153,7 +169,7 @@ The assets are:
   `mise run skills` run, links the package's skills offline and fetches
   the rest, and `skills-lock.json` records them all. Offline, `prepare`
   warns and links the package's alone; under `CI` it fetches nothing.
-  `lint:skills` fails a commit whose skills and lock disagree.
+  The `skills` lint step fails a commit whose skills and lock disagree.
 - **Memory** in `docs/memory/`, which Claude Code's auto memory and
   Dorothy's fact sync both read and write, indexed by its `MEMORY.md`,
   each entry a link with its hook on the next line. It holds the user's
@@ -196,8 +212,9 @@ The rules for an agent:
   a code alone, never sops's own message, so a log holds no fragment.
 - A variable already set in the environment is kept over the file's.
 - `bunfig.toml` skips `.env` files, so a project's `.env` never reaches
-  Dorothy's environment. The pre-commit hook and `lint:secrets` reject a
-  plaintext value in `secrets.json`, any `.env` file and any age secret key.
+  Dorothy's environment. The `secrets` lint step, pre-commit's too, rejects
+  a plaintext value in `secrets.json`, any `.env` file and any age secret
+  key.
 - Tests and probes never touch the user's key or real data: every root,
   key and environment is passed in, and a test makes its own age key in a
   temporary directory.
@@ -240,7 +257,7 @@ for how, reports for probes, rulings and verification, notes for research,
 deferred findings, and the roadmap. Dated records keep a
 `YYYY-MM-DD_<abbreviated-title>.md` name and are not rewritten; living pages
 take stable names. Each file opens with frontmatter and a breadcrumb that
-`lint:header` checks, and lines are at most 80 characters, inline code
+the `headers` lint step checks, and lines are at most 80 characters, inline code
 included.
 
 Design work starts with brainstorming and becomes a spec; a plan written

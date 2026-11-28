@@ -59,7 +59,8 @@ account=reserve
 if sops decrypt --extract "[\"$token_var\"]" "$checkout/secrets.json" \
     >/dev/null 2>&1; then
     account=primary
-    [ "$(limited)" != limited ] || account=reserve
+    limit=$(limited)
+    [ "$limit" != limited ] || account=reserve
 fi
 
 if [ "$account" = primary ]; then
@@ -68,5 +69,6 @@ else
     DOROTHY_CLAUDE_TOKEN_VAR=CLAUDE_CODE_OAUTH_TOKEN
 fi
 export DOROTHY_CLAUDE_TOKEN_VAR
-printf '%s claude account: %s\n' "$(date +%H:%M)" "$account" >&2
+clock=$(date +%H:%M)
+printf '%s claude account: %s\n' "$clock" "$account" >&2
 exec "$@"

@@ -1,52 +1,66 @@
 {
     "name": "dorothy",
     "version": "1.0.0",
-    "description": "Conversational LLM interface",
     "private": true,
-    "type": "module",
+    "description": "Conversational LLM interface",
     "keywords": [
         "llm",
         "chatbot",
         "dorothy"
     ],
-    "license": "GPL-3.0-only",
     "homepage": "https://github.com/xxdorothy/dorothy",
     "repository": "github:xxdorothy/dorothy",
-    "engines": {
-        "bun": ">=1.4"
-    },
+    "license": "GPL-3.0-only",
+    "type": "module",
     "workspaces": [
         "packages/*"
     ],
+    "scripts": {
+        "check": "mise run check --all",
+        "dev": "bun packages/cli/src/index.ts",
+        "eval": "bun packages/eval/src/main.ts",
+        "prepare": "sh scripts/prepare.sh",
+        "start": "bun packages/cli/src/index.ts"
+    },
+    "config": {
+        "commitizen": {
+            "path": "@chewygumxx/cz-commitlint"
+        }
+    },
     "dependencies": {
         "@dorothy/cli": "workspace:*"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.15",
-        "@chewygumxx/biome-config": "^1.0.0",
+        "@biomejs/biome": "2.6.9",
+        "@chewygumxx/actionlint-config": "^1.0.2",
+        "@chewygumxx/biome-config": "^1.3.1",
         "@chewygumxx/commitlint-config": "^1.1.0",
         "@chewygumxx/cz-commitlint": "^1.0.2",
+        "@chewygumxx/editorconfig-checker-config": "^1.0.1",
+        "@chewygumxx/hk-config": "0.3.1",
         "@chewygumxx/markdownlint-cli2-config": "^1.1.0",
+        "@chewygumxx/mise-tasks-config": "0.3.2",
+        "@chewygumxx/prettier-config": "^1.0.1",
         "@chewygumxx/remark-preset": "^1.0.3",
+        "@chewygumxx/shellcheck-config": "^1.0.1",
         "@chewygumxx/yamllint-config": "^1.0.1",
         "@commitlint/cli": "^21.2.2",
         "@dorothy/skills": "workspace:*",
         "@types/bun": "^1.4.3",
         "commitizen": "^4.3.2",
-        "husky": "^9.1.7",
         "markdownlint-cli2": "^0.23.3",
         "prettier": "^3.9.10",
         "remark-cli": "^12.0.1",
         "skills": "^1.7.5",
-        "sync-header-metadata": "2.4.2",
+        "sort-package-json": "^4.1.0",
+        "sync-header-metadata": "^2.4.3",
         "typescript": "^7.0.2"
     },
-    "scripts": {
-        "check": "mise run check",
-        "dev": "bun packages/cli/src/index.ts",
-        "eval": "bun packages/eval/src/main.ts",
-        "prepare": "sh scripts/prepare.sh",
-        "start": "bun packages/cli/src/index.ts"
+    "engines": {
+        "bun": ">=1.4"
+    },
+    "patchedDependencies": {
+        "isomorphic-git@1.43.1": "patches/isomorphic-git@1.43.1.patch"
     },
     "skills": [
         {
@@ -101,13 +115,5 @@
                 "i-have-adhd"
             ]
         }
-    ],
-    "config": {
-        "commitizen": {
-            "path": "@chewygumxx/cz-commitlint"
-        }
-    },
-    "patchedDependencies": {
-        "isomorphic-git@1.43.1": "patches/isomorphic-git@1.43.1.patch"
-    }
+    ]
 }

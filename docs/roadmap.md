@@ -1,6 +1,6 @@
 ---
 ctime: 2026-10-09
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Roadmap
 description: >-
@@ -52,7 +52,9 @@ or estimates.
 
 ## Ahead
 
-In order; the first is next.
+In order; the first is next. The user retained the monorepository on
+2026-11-29: the proposed split is no longer a gate. See the
+[settlement and handoff](./reports/2026-11-29_monorepository-settlement.md).
 
 ### Dorothy's Memory
 
@@ -459,18 +461,16 @@ Found but not scheduled, each with its source.
   trial is [reported](./reports/2026-11-11_build-configuration.md#comment-audit)
   and the skill is written from that record, in the user's agent library.
   Source: the user, 2026-11-10 and 2026-11-11.
-- Mise 2026.11.6's pruning of `node_modules`, which removes the 12-second
-  floor of a `lint` that skips every task. `configuring-mise-tasks` will
-  move its exclusion last once benchmarked there; then raise the
-  repository's mise pin and measure
-  ([the limit](./reports/2026-11-11_build-configuration.md#limits),
-  [wiki](./wiki/topics/build-configuration.md#mise)). Source: the build
-  configuration report, 2026-11-11.
-- A flaky test in the commit hook: `scripts/probe-pi-stewardship.test.ts`
+- The shared hk steps not yet adopted: cspell, knip and secretlint, each
+  a change of its own across the existing tree
+  ([report](./reports/2026-11-29_hk-validation.md#limits)). Source: the
+  hk validation report, 2026-11-29.
+- A flaky test, once in the commit hook: `scripts/probe-pi-stewardship.test.ts`
   "the live control boundary" failed once under the hook's load (exit 10
-  for 7, after 13.5 seconds) and passed twice alone. Undiagnosed; take it
-  up on a second sighting, as a flake in the hook or CI blocks a merge.
-  Source: the build configuration report, 2026-11-11.
+  for 7, after 13.5 seconds) and passed twice alone. The tests have since
+  left the hook for CI. Undiagnosed; take it up on a second sighting, as
+  a flake in CI blocks a merge. Source: the build configuration report,
+  2026-11-11.
 - Tests that fail in the agent's shell. On a pristine checkout, `bun test`
   run in a coding agent's session fails 48 tests (45 in
   `scripts/agent-stewardship.test.ts`, two in `scripts/statusline.test.ts`
@@ -817,3 +817,14 @@ In order of completion.
   last holds limits no phase depends on. The flake and the failing tests
   are the nearest to Ahead, and rise if the flake recurs or an agent's
   `bun test` hides a regression.
+- 2026-11-29: The user retained the modular monorepository and removed the
+  proposed split as an external gate. Memory remains first in Ahead;
+  unresolved live checks and earlier revision obligations remain. Nx and
+  ADR tooling are optional trials, not phase requirements. See the
+  [settlement](./reports/2026-11-29_monorepository-settlement.md).
+- 2026-11-29: Validation moved to the shared hk steps and mise templates
+  of `shared-config`, and the pre-commit hook to the staged files alone,
+  without the tests; a commit lints in about a second, not three minutes.
+  Mise's `node_modules` pruning left Candidates, as hk's cache replaced
+  mise's sources, and the shared steps not yet adopted joined them. Ahead
+  is unchanged. See the [report](./reports/2026-11-29_hk-validation.md).

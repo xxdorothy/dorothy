@@ -12,9 +12,7 @@
 set -e
 
 # A production install has no development dependencies to set up.
-[ -d node_modules/husky ] || exit 0
-
-husky
+[ -d node_modules/skills ] || exit 0
 
 # The sync exits 1 on a failed fetch, as offline: warn and link the
 # package's skills alone, failing the install only if that fails too.
@@ -29,3 +27,5 @@ DO_NOT_TRACK=1 skills experimental_sync -y \
 bun test --bail agents.test.ts --test-name-pattern 'the skills'
 
 bun scripts/agent-memory.ts
+
+sh scripts/hooks/install.sh

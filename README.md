@@ -1,6 +1,6 @@
 ---
 ctime: 2026-09-29
-mtime: 2026-11-22
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: "dorothy"
 description: "Conversational LLM interface"
@@ -98,11 +98,13 @@ moves with its `XDG_*` variable. The wiki's
 [`AGENTS.md`](./AGENTS.md) and each package's own describe the nine
 workspace packages under `packages/`.
 
-- `mise run check` (or `bun run check`): everything CI runs.
+- `mise install`: the tools, the packages and the git hooks.
+- `mise run check --all` (or `bun run check`): everything CI runs.
+- `mise run lint` and `mise run format`: hk over the changed files.
 - `mise run test`: the tests alone; `mise tasks ls`: the rest.
 - `mise run commit`: compose a commit.
 
-The pre-commit hook runs `mise run check --staged`, and the commit-msg
+The pre-commit hook runs `mise run lint --staged`, and the commit-msg
 hook commitlint. CI runs the shared standard workflow, then
 `bun run check`.
 

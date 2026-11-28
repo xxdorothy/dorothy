@@ -8,8 +8,8 @@
 //
 //
 
-// The house header on every file of a headed type. `lint:header` fails a
-// header that is out of sync; this fails a file with none.
+// The house header on every file of a headed type. The `headers` lint
+// step fails a header that is out of sync; this fails a file with none.
 
 import { afterAll, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -47,6 +47,7 @@ describe("the house header", () => {
             ".repo-metadata.jsonc",
             ".github/workflows/ci.yaml",
             "docs/roadmap.md",
+            ".config/hk.pkl",
         ]) {
             expect(isHeaded(path)).toBe(true);
         }
@@ -58,6 +59,7 @@ describe("the house header", () => {
             "docs/reports/2026-10-08-tags/probe/say.sh",
             "docs/memory/MEMORY.md",
             ".github/pull_request_template.md",
+            ".config/mise/conf.d/50-cgxx-std.toml",
             "packages/cli/assets/pi/vendor/herdr/herdr-agent-state.ts",
         ]) {
             expect(isHeaded(path)).toBe(false);

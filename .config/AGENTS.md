@@ -1,11 +1,11 @@
 ---
 ctime: 2026-11-11
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: .config/AGENTS.md
 description: >-
-  The tools configured in .config/ and what mise supplies for each to
-  find its configuration there.
+  The tools configured in .config/ and how each finds its configuration
+  there.
 tags:
   - agents
 ---
@@ -20,25 +20,27 @@ tags:
 # .config/AGENTS.md
 
 Tool configuration lives here wherever the tool can be pointed at it.
-Each line names a tool, its file and what mise supplies to reach it.
+Each line names a tool, its file and how the tool reaches it.
 
-- mise: `mise/config.toml` (tools, `[env]`), read natively, includes
-  `mise/tasks/*.task.toml` (tasks) by `[task_config]`; nothing is
-  supplied. Each task file holds a family: `lint.task.toml` holds `lint`
-  and every `lint:*`, `format.task.toml` likewise; `standard.task.toml`
-  holds `install`, `test` and `check`, `bun.task.toml` the tasks
-  wrapping Bun's layer and `other.task.toml` the rest.
-- Tombi: `tombi.toml`; Tombi finds it natively, nothing is supplied.
-- remark: `remarkrc.json`; the `lint:md` task passes
-  `--rc-path .config/remarkrc.json`.
-- markdownlint-cli2: `markdownlint-cli2.jsonc`; the `lint:md` task passes
-  `--config .config/markdownlint-cli2.jsonc`, and the overrides in
-  `.github/` and `docs/memory/` still merge over it.
-- yamllint: no file here; `mise/config.toml`'s `[env]` sets
+- mise: `mise/config.toml` (tools, `[env]`, the `postinstall` hook), read
+  natively, includes `mise/tasks/*.task.toml` by `[task_config]`.
+  `standard.task.toml` holds the standard tasks, each extending a `cgxx:`
+  template that `mise/conf.d/` links from
+  `@chewygumxx/mise-tasks-config`; `bun.task.toml` the tasks wrapping
+  Bun's layer and `other.task.toml` the rest.
+- hk: `hk.pkl`, the hooks and the lint and format steps, imported from
+  `@chewygumxx/hk-config`; mise's tasks run hk, which finds it natively.
+- Tombi: `tombi.toml`; Tombi finds it natively.
+- remark: `remarkrc.json`; hk's `remark` step passes `--rc-path`.
+- Prettier: `prettierrc.json`, naming `@chewygumxx/prettier-config`; hk's
+  `prettier` step passes `--config`.
+- yamllint: no file here; hk's `yamllint` step sets
   `YAMLLINT_CONFIG_FILE` to `@chewygumxx/yamllint-config`.
 
-Biome (`.biome.json`) and commitlint (`.commitlintrc.mts`) stay at the
-root: Biome refuses a configuration in a subdirectory as a second root,
-and commitlint's search omits `.config/`. The reasons for each tool's
-configuration, and what else stays at the root, are on the wiki's
+Biome (`.biome.json`), commitlint (`.commitlintrc.mts`) and
+markdownlint-cli2 (`.markdownlint-cli2.jsonc`) stay at the root: Biome
+refuses a configuration in a subdirectory as a second root, commitlint's
+search omits `.config/`, and hk's shared step lets markdownlint-cli2 find
+its own. The reasons for each tool's configuration, and what else stays
+at the root, are on the wiki's
 [build configuration](../docs/wiki/topics/build-configuration.md) page.
