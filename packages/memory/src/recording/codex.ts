@@ -34,6 +34,7 @@ const BOOKKEEPING = new Set([
     "inter_agent_communication_metadata",
     "response_item/reasoning",
     "response_item/agent_message",
+    "response_item/additional_tools",
     "event_msg/item_completed",
     "event_msg/task_started",
     "event_msg/task_complete",

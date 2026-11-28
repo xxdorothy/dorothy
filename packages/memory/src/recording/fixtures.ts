@@ -93,6 +93,12 @@ export const bookkeeping = [
         recipient: "fixture-peer",
         content: [{ type: "input_text", text: "Synthetic agent note." }],
     }),
+    line("response_item", {
+        type: "additional_tools",
+        id: "at_fixture",
+        role: "developer",
+        tools: [{ type: "function", name: "fixture_tool" }],
+    }),
     ...[
         "item_completed",
         "task_started",
