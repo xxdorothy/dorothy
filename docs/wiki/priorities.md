@@ -32,8 +32,8 @@ In the roadmap's order; the first is next.
 - [Dorothy's Memory](../roadmap.md#dorothys-memory): Store, Bodies,
   Contract, Evaluation and Recording Built; the Backfill Recorded and
   Reviewed; the First Run Done; the Engine's First Step Built and its Paid
-  Runs Done, keeping her engine; Delivery Built for Codex, its Live Probe
-  Waiting on the User's Sign-in; Hermes and OpenClaw Backlogged.
+  Runs Done, keeping her engine; Delivery Built and Probed Live for
+  Codex; Hermes and OpenClaw Backlogged.
 - [Dorothy's Gateway](../roadmap.md#dorothys-gateway): Idea.
 - [Cyclical Maintenance (4a)](../roadmap.md#cyclical-maintenance-4a):
   Design Agreed, Pending Specification.
@@ -100,10 +100,8 @@ Found but not scheduled, in the roadmap's order, which
 Live checks that wait on the user's sign-ins or approval. What each host
 needs is on [harnesses](./profiles/harnesses.md).
 
-- Codex, a live probe on a temporary Codex home the user signs in
-  ([step 4](../reports/2026-11-01-delivery.md#waiting-for-the-user)).
-  Codex itself is available; the sign-in keeps the probe off the user's
-  own Codex configuration and credentials.
+Nothing, since the Codex live probe of 2026-11-29
+([report](../reports/2026-11-29_codex-probe.md)).
 
 ## Related
 

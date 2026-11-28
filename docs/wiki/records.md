@@ -414,6 +414,9 @@ first.
 - [Monorepository
   settlement](../reports/2026-11-29_monorepository-settlement.md): Report.
   The user's ruling, context scope and optional tooling trial.
+- [Codex live probe](../reports/2026-11-29_codex-probe.md): Report. Her
+  hooks trusted from session flags, her answer from memory, the live
+  payloads and the sweep, on Codex 0.172.0.
 - [Validation through hk](../reports/2026-11-29_hk-validation.md): Report.
   The shared hk steps and mise templates replacing husky and Dorothy's
   tasks, with the pre-commit hook's timings before and after.

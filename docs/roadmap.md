@@ -138,33 +138,31 @@ verified them before the user's backfill, then the owner's first run.
   the Backfill Recorded and Reviewed; the First Run Done
   ([record](./reports/2026-10-31-first-evaluation.md)); the Engine's
   First Step Built and its Paid Runs Done, keeping her engine;
-  Delivery Built for Codex, its Live Probe Waiting on the User's Sign-in;
-  Hermes and OpenClaw Backlogged
+  Delivery Built for Codex and Probed Live
+  ([record](./reports/2026-11-29_codex-probe.md)); Hermes and OpenClaw
+  Backlogged; the Phase Awaiting its Revising
 - **Required**: Requisites Fulfilled
-- **Rationale**: Wherever she goes, her memory follows with her. The
-  contract gives every harness one service and every engine one
-  interface, and the evaluation now measures her memory on the user's
-  own sessions: 315 conversations, 133 questions drafted by the plans'
-  strongest models and pre-screened crosswise by agents. Reviewing the
-  backfill raised her recall at 10 from 9.6% to 46.4%, past lexical
-  search on questions across sessions, but her strict accuracy only
-  from 4.0% to 7.3%: she finds the conversation and answers from its
-  notes, not the passage that holds the fact, while lexical search,
-  returning passages, scores 25%. The engine's first step found her
-  knowledge crowding out the passages she found, and delivers them now:
-  evidence for 98 of 125 questions, from 9. Its paid runs, judged
-  again once the judges were told her answers are remembered, took her
-  strict accuracy from 7 to 43 of 125, past lexical search's 27, with
-  half her preference answers right and every abstention kept, so her
-  engine stays. Delivery, the last piece, gives her to Codex through
-  `dorothy --codex` and to Hermes through a provider in a profile of
-  her own, both through one hook command
+- **Rationale**: Wherever she goes, her memory follows with her. The contract
+  gives every harness one service and every engine one interface, and the
+  evaluation now measures her memory on the user's own sessions: 315
+  conversations, 133 questions drafted by the plans' strongest models and
+  pre-screened crosswise by agents. Reviewing the backfill raised her recall at
+  10 from 9.6% to 46.4%, past lexical search on questions across sessions, but
+  her strict accuracy only from 4.0% to 7.3%: she finds the conversation and
+  answers from its notes, not the passage that holds the fact, while lexical
+  search, returning passages, scores 25%. The engine's first step found her
+  knowledge crowding out the passages she found, and delivers them now: evidence
+  for 98 of 125 questions, from 9. Its paid runs, judged again once the judges
+  were told her answers are remembered, took her strict accuracy from 7 to 43 of
+  125, past lexical search's 27, with half her preference answers right and
+  every abstention kept, so her engine stays. Delivery, the last piece, gives
+  her to Codex through `dorothy --codex` and to Hermes through a provider in a
+  profile of her own, both through one hook command
   ([spec](./specs/2026-11-01-delivery-design.md),
   [plan](./plans/2026-11-01-delivery.md),
-  [report](./reports/2026-11-01-delivery.md)); Codex's live probe waits
-  for the user to sign a temporary Codex home in, the last piece before
-  the phase closes. A chunk index waits on the questions only lexical
-  search passes.
+  [report](./reports/2026-11-01-delivery.md)); Codex's live probe, the last
+  piece, passed on 2026-11-29 ([record](./reports/2026-11-29_codex-probe.md)). A
+  chunk index waits on the questions only lexical search passes.
 
 ### Dorothy's Gateway
 

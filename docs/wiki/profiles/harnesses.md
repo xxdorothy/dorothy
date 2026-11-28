@@ -52,8 +52,8 @@ The states are built, designed, awaiting a live check and waiting on the
 user. "Built" means code and tests exist. Where the roadmap, a report and
 the code disagree, this page follows the most recent record that verifies
 the point and says so. The roadmap's Status for Dorothy's Memory, which
-this page agrees with, reads: Delivery Built for Codex, its live probe
-waiting on the user's sign-in; Claude Code was delivered earlier.
+this page agrees with, reads: Delivery Built and Probed Live for Codex;
+Claude Code was delivered earlier.
 
 In the host profiles, which are data in
 [`packages/memory/src/hosts/`](../../../packages/memory/src/hosts/),
@@ -135,18 +135,20 @@ None waiting. The probes above passed on real Claude Code, the latest on
 
 ## Codex
 
-Delivery built. The full delivery checks below still wait on the user;
-a narrower native-subagent guard was probed on 2026-11-14.
+Delivery built and checked live on 2026-11-29 with Codex 0.172.0 ([live
+probe](../../reports/2026-11-29_codex-probe.md)); a native-subagent guard was
+probed on 2026-11-14.
 
 ### Persona
 
-Built, awaiting a live check. `dorothy --codex` launches Codex with her
-identity as `developer_instructions`, the user's own instructions
-following hers, all as session flags that write none of Codex's files
-([the hosts guide](../../../packages/cli/src/hosts/AGENTS.md#files)). Whether
-Codex accepts that key without an unknown-key warning, and treats it as
-additive, is an open probe that waits on the user
-([probes](../../reports/2026-11-01-delivery/probes.md#codexs-additive-instructions-key)).
+Built and checked live. `dorothy --codex` launches Codex with her identity as
+`developer_instructions`, the user's own instructions following hers, all as
+session flags that write none of Codex's files ([the hosts
+guide](../../../packages/cli/src/hosts/AGENTS.md#files)). Whether Codex accepts
+that key without an unknown-key warning, and treats it as additive, was open
+until the [live probe](../../reports/2026-11-29_codex-probe.md): it is accepted
+without warning, and her core follows Codex's own instructions as a second
+developer message.
 
 The launcher sets `agents.enabled=false`: Codex children otherwise
 inherit her developer instructions and persona tool, even with
@@ -157,46 +159,40 @@ This checks native delegation, not the full delivery flow
 
 ### Recording
 
-Built for reading; no recording hooks, by ruling 10 of the
-[delivery report](../../reports/2026-11-01-delivery.md#rulings). Codex's
-rollout files are read by the sweep, which needs `codex` in
-`[recording] hosts` (empty by default). The
-[recording report's probe](../../reports/2026-10-20-recording.md#the-probe)
-(2026-10-20) backfilled copies of the user's 7 rollouts, 1,293 events,
-with no halt and no unknown type, and a second run recorded nothing new.
-That is a check on copies, not on a Codex session running with her
-hooks. The design is the
-[recording spec](../../specs/2026-10-20-recording-design.md).
+Built for reading; no recording hooks, by ruling 10 of the [delivery
+report](../../reports/2026-11-01-delivery.md#rulings). Codex's rollout files are
+read by the sweep, which needs `codex` in `[recording] hosts` (empty by
+default). The [recording report's
+probe](../../reports/2026-10-20-recording.md#the-probe) (2026-10-20) backfilled
+copies of the user's 7 rollouts, 1,293 events, with no halt and no unknown type,
+and a second run recorded nothing new. On 2026-11-29 the sweep recorded a live
+session run with her hooks, the user's turn and her answer and nothing of the
+hooks' text ([live probe](../../reports/2026-11-29_codex-probe.md)). The design
+is the [recording spec](../../specs/2026-10-20-recording-design.md).
 
 ### Memory access
 
-Built, verified without Codex. The opening block comes from a
-`SessionStart` hook and recall from a `UserPromptSubmit` hook, both
-`dorothy --hook codex <event>`, and her tools from an MCP server, all
-given as session flags. Codex asks the user once to trust the hooks and
-the launcher never bypasses it. Its own memories are off in her sessions.
-On 2026-11-01 a probe Dorothy on temporary roots answered the real hook
-command for Codex with the seeded fact in both block and recall, a large
-reply through a pipe whole, and an empty reply when no service could
-start ([verification](../../reports/2026-11-01-delivery.md#verification)).
-The payload shape was taken from the strings of Codex 0.165.0's binary,
-not captured from a running Codex, so it too is awaiting the live check.
+Built, verified without Codex. The opening block comes from a `SessionStart`
+hook and recall from a `UserPromptSubmit` hook, both `dorothy --hook codex
+<event>`, and her tools from an MCP server, all given as session flags. Codex
+asks the user once to trust the hooks and the launcher never bypasses it. Its
+own memories are off in her sessions. On 2026-11-01 a probe Dorothy on temporary
+roots answered the real hook command for Codex with the seeded fact in both
+block and recall, a large reply through a pipe whole, and an empty reply when no
+service could start
+([verification](../../reports/2026-11-01-delivery.md#verification)). The payload
+shape was taken from the strings of Codex 0.165.0's binary; the [live
+probe](../../reports/2026-11-29_codex-probe.md) captured it from Codex 0.172.0,
+the same with one field more, `permission_mode`.
 
 ### Live checks
 
-Waiting on the user's sign-in. Codex itself is available; the delivery
-report of 2026-11-01 waited for its usage to reset on 5 November, long
-past. The probe runs Codex on a temporary `CODEX_HOME`, so neither
-Dorothy's hooks nor their trust touch the user's own Codex
-configuration, and that home needs the user's own `codex login`; copying
-the user's credentials in would risk the token their own Codex uses. The
-[delivery report's Waiting section](../../reports/2026-11-01-delivery.md#waiting-for-the-user)
-lists what the run will show: the trust screen, whether hooks given as
-session flags are offered for trust at all (otherwise a plugin route
-would be built instead), whether the instructions key is accepted,
-whether the payloads match the fixtures, and that the sweep records the
-rollout. The 2026-11-14 native-subagent probe above does not establish
-these full delivery checks.
+Done on 2026-11-29 ([live probe](../../reports/2026-11-29_codex-probe.md)), on a
+temporary `CODEX_HOME` the user signed in, so neither her hooks nor their trust
+touched the user's own Codex. Codex offered her session-flag hooks for trust, so
+no plugin route is needed; she answered the seeded fact from her block and
+recall, in `exec` and in the interactive interface; and the sweep recorded the
+session. The remaining limits are the report's.
 
 ## OpenClaw
 
