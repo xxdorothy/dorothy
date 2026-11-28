@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Priorities
 description: >-
@@ -32,8 +32,8 @@ In the roadmap's order; the first is next.
 - [Dorothy's Memory](../roadmap.md#dorothys-memory): Store, Bodies,
   Contract, Evaluation and Recording Built; the Backfill Recorded and
   Reviewed; the First Run Done; the Engine's First Step Built and its Paid
-  Runs Done, keeping her engine; Delivery Built for Codex and Hermes, its
-  Live Probes Waiting on the User; OpenClaw's Waiting on its Install.
+  Runs Done, keeping her engine; Delivery Built for Codex, its Live Probe
+  Waiting on the User's Sign-in; Hermes and OpenClaw Backlogged.
 - [Dorothy's Gateway](../roadmap.md#dorothys-gateway): Idea.
 - [Cyclical Maintenance (4a)](../roadmap.md#cyclical-maintenance-4a):
   Design Agreed, Pending Specification.
@@ -51,7 +51,6 @@ Found but not scheduled, in the roadmap's order, which
 
 - **High priority:** an additional independent backup destination for
   development evidence.
-- A registry of herdr agents.
 - Pi delivery's deferred findings and limits.
 - Pi stewardship's deferred findings and limits.
 - Model Providers' deferred findings.
@@ -60,6 +59,7 @@ Found but not scheduled, in the roadmap's order, which
 - The evaluation's later systems and checks.
 - The contract's later work.
 - Subagents' transcripts as conversations.
+- Hermes Agent and OpenClaw, backlogged.
 - OpenClaw's reader.
 - The recording's remaining rough edges.
 - The store's remaining gaps.
@@ -100,11 +100,10 @@ Found but not scheduled, in the roadmap's order, which
 Live checks that wait on the user's sign-ins or approval. What each host
 needs is on [harnesses](./profiles/harnesses.md).
 
-- Hermes, a live probe on a temporary home the user signs in
-  ([step 3](../reports/2026-11-01-delivery.md#waiting-for-the-user)).
-- Codex, a live probe with the user after 5 November 17:23, when its usage
-  resets
+- Codex, a live probe on a temporary Codex home the user signs in
   ([step 4](../reports/2026-11-01-delivery.md#waiting-for-the-user)).
+  Codex itself is available; the sign-in keeps the probe off the user's
+  own Codex configuration and credentials.
 
 ## Related
 

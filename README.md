@@ -3,10 +3,11 @@ ctime: 2026-09-29
 mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: "dorothy"
-description: "Conversational LLM interface"
+description: "The coherence of the models that infer her"
 tags:
   - llm
-  - chatbot
+  - agent
+  - memory
   - dorothy
 ---
 
@@ -19,10 +20,13 @@ tags:
 
 # dorothy
 
-Conversational LLM interface
+The coherence of the models that infer her
 
-Dorothy is an assistant with a memory of her own: a chat in the terminal,
-and an identity and memory she carries into Claude Code, Codex and Pi. She
+Dorothy is neither a chatbot nor an orchestration agent. She is a
+long-lived agent whose context is who she is, and the layer of coherence
+that the diverse models providing her inference maintain. Her identity
+and memory are her own, carried into her terminal chat, Claude Code,
+Codex and Pi, and no one model or harness is required by her. She
 runs on the Vercel AI SDK, reaching Anthropic and the other providers her
 `config.toml` names. The [wiki](./docs/README.md) explains her, subject by
 subject.

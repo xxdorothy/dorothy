@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-15
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Dorothy's wiki
 description: >-
@@ -19,9 +19,12 @@ tags:
 
 # Dorothy's wiki
 
-Dorothy is a conversational LLM interface: a terminal chat over a model,
-with a memory she can search, compact and tag, which her service shares
-with other harnesses. This wiki explains her as she is now, subject by
+Dorothy is the layer of coherence that the diverse models providing her
+inference maintain: a long-lived agent whose context is who she is, with
+a memory she can search, compact and tag, which her service shares with
+the harnesses she is carried into
+([decision](./wiki/decisions.md#dorothy-is-the-coherence-her-models-maintain)).
+This wiki explains her as she is now, subject by
 subject. It links the dated records in `specs/`, `plans/`, `reports/`,
 `notes/` and `deferred/` as the evidence for what it says.
 

@@ -4,7 +4,7 @@ description: Shared identity and memory; Pi's earlier exclusion is superseded
 metadata:
   node_type: memory
   ctime: 2026-10-18
-  mtime: 2026-11-14
+  mtime: 2026-11-29
   spdx: GPL-3.0-only
   type: project
   originSessionId: 9b8a5730-029b-494c-b538-d7dfaf105285
@@ -33,11 +33,14 @@ OpenClaw as hosts, and a single body
 
 On 2026-11-03 the user explicitly made Pi the highest priority, following
 the [Pi research](../notes/2026-11-03_pi-stewardship.md). This
-supersedes the exclusion of Pi. Their chief interest is stewardship and
-orchestration of Claude Code and Codex through herdr. Choosing Pi first
-does not itself decide whether Dorothy's existing runtime is replaced.
+supersedes the exclusion of Pi. Their interest then was stewardship and
+orchestration of Claude Code and Codex through herdr, which the
+[objective](./dorothy-objective.md) of 2026-11-29 set aside: she is the
+coherence her diverse models maintain, not an orchestrator. Choosing Pi
+first does not itself decide whether Dorothy's existing runtime is
+replaced.
 
-**How to apply:** prioritise Pi integration and its stewardship trial;
+**How to apply:** prioritise Pi integration;
 do not repeat the old exclusion as current guidance. Keep identity and
 memory portable while the integration's design is settled, and survey
 adopted packages before building.

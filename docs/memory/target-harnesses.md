@@ -1,10 +1,10 @@
 ---
 name: target-harnesses
-description: "Pi is Dorothy's highest-priority integration and stewardship host"
+description: "Pi, Claude Code and Codex are Dorothy's hosts; Hermes and OpenClaw backlogged"
 metadata:
   node_type: memory
   ctime: 2026-10-19
-  mtime: 2026-11-14
+  mtime: 2026-11-29
   spdx: GPL-3.0-only
   type: project
   originSessionId: fb965535-b7ef-4fd4-8065-6767fb16ee58
@@ -44,3 +44,10 @@ Dorothy's existing interface. The
 the launcher, extension, memory adapter and stewardship trial. The user
 approved it, then authorised execution without another plan approval
 round. Follow the delivery and stewardship plans linked from the roadmap.
+
+On 2026-11-29 the user backlogged Hermes and OpenClaw: what is built for
+them stays, and their probes, readers and delivery wait in the roadmap's
+candidates. Stewardship and orchestration are no longer the interest:
+the user ruled that Dorothy is not an orchestration agent
+([her objective](./dorothy-objective.md)), and disqualified the herdr
+registry, as herdr's terminal interface has stagnated upstream.
