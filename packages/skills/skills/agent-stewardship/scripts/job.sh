@@ -43,6 +43,7 @@ plain() {
     *[[:space:]]* | *\"* | *\'* | *\\* | *\$* | *%* | *\;*)
         die 1 "$1 holds a character systemd would read; use a plainer path"
         ;;
+    *) ;;
     esac
 }
 
@@ -60,6 +61,7 @@ name=$1
 shift
 case $name in
 *[!A-Za-z0-9._-]* | '' | -*) usage ;;
+*) ;;
 esac
 
 notify=-
@@ -70,6 +72,7 @@ while [ $# -gt 0 ]; do
         [ $# -ge 2 ] || usage
         case $2 in
         *[!A-Za-z0-9:_.-]* | '' | -*) usage ;;
+        *) ;;
         esac
         notify=$2
         shift 2
@@ -78,6 +81,7 @@ while [ $# -gt 0 ]; do
         [ $# -ge 2 ] || usage
         case $2 in
         *[!A-Za-z0-9_]* | '' | [0-9]*) usage ;;
+        *) ;;
         esac
         extra="$extra $2"
         shift 2
@@ -116,7 +120,7 @@ set -- -- "$@"
 for var in $setenvs; do
     set -- "--setenv=$var" "$@"
 done
-set -- --user --collect "--unit=$unit" "--working-directory=$(pwd)" \
+set -- --user --collect "--unit=$unit" "--working-directory=$PWD" \
     --expand-environment=no \
     -p "StandardOutput=append:$log" -p "StandardError=append:$log" \
     -p "ExecStopPost=$stop $unit $notify" "$@"

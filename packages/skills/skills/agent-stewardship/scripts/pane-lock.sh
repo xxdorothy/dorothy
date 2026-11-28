@@ -52,7 +52,7 @@ lock_pane() {
 deadline_remaining() {
     [ -n "${deadline_at:-}" ] || return 1
     now_ms=$(date +%s%3N) || die 10 'cannot read the trial clock'
-    case $now_ms in *[!0-9]* | '') die 10 'cannot read the trial clock' ;; esac
+    case $now_ms in *[!0-9]* | '') die 10 'cannot read the trial clock' ;; *) ;; esac
     printf '%s\n' "$((deadline_at - now_ms))"
 }
 
@@ -76,7 +76,7 @@ deadline_pause() {
     }
     deadline_check "$code"
     left=$(deadline_remaining) || die "$code" 'invalid trial deadline'
-    case $pause in *[!0-9.]* | '') die 1 'invalid send pause' ;; esac
+    case $pause in *[!0-9.]* | '') die 1 'invalid send pause' ;; *) ;; esac
     whole=${pause%%.*}
     [ -n "$whole" ] || whole=0
     needed=$((whole * 1000))

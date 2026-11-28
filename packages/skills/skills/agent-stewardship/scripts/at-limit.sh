@@ -38,6 +38,7 @@ while [ $# -gt 0 ]; do
         --wait) wait=$2 ;;
         --tries) tries=$2 ;;
         --retry) retry=$2 ;;
+        *) ;;
         esac
         shift 2
         ;;
@@ -49,15 +50,16 @@ while [ $# -gt 0 ]; do
     esac
 done
 [ $# -gt 0 ] || usage
-case $wait in '' | *[!0-9]*) usage ;; esac
-case $tries in '' | *[!0-9]*) usage ;; esac
+case $wait in '' | *[!0-9]*) usage ;; *) ;; esac
+case $tries in '' | *[!0-9]*) usage ;; *) ;; esac
 
 code=0
 "$@" || code=$?
 attempt=0
 while [ "$code" -eq 75 ] && [ "$attempt" -lt "$tries" ]; do
     attempt=$((attempt + 1))
-    printf '%s limited; retrying in %ss (%s of %s)\n' "$(date +%H:%M)" \
+    clock=$(date +%H:%M)
+    printf '%s limited; retrying in %ss (%s of %s)\n' "$clock" \
         "$wait" "$attempt" "$tries" >&2
     sleep "$wait"
     code=0

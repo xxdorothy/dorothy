@@ -10,22 +10,34 @@
 #
 
 #
-# The standard set: install, test and check
+# The standard set, each extending a cgxx: template from
+# @chewygumxx/mise-tasks-config, linked into .config/mise/conf.d/. lint and
+# format run the steps of .config/hk.pkl through hk, quietly: changed files
+# by default, --staged or --all otherwise, one step with --step.
 # https://mise.jdx.dev/tasks/task-configuration.html
 #
 
 [install]
-description = "Install the locked dependency tree"
-alias       = "i"
-run         = "bun ci"
+extends = "cgxx:install"
+
+[lint]
+extends = "cgxx:lint"
+
+[format]
+extends = "cgxx:format"
 
 [test]
-description = "Run the tests"
-alias       = "t"
-run         = "bun test"
+extends = "cgxx:test"
 
 [check]
-description = "Run everything CI runs: lint and test"
-alias       = "c"
-usage       = 'flag "--staged" help="Lint staged files alone; test in full"'
-depends     = [ "lint {% if usage.staged %}--staged{% endif %}", "test" ]
+extends = "cgxx:check"
+
+[commit]
+extends = "cgxx:commit"
+
+["commit:lint"]
+extends = "cgxx:commit:lint"
+alias   = "lint:commit"
+
+[act]
+extends = "cgxx:act"

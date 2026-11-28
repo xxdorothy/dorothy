@@ -1,0 +1,83 @@
+// vim:set expandtab shiftwidth=4 filetype=pkl:
+// SPDX-License-Identifier: GPL-3.0-only
+
+//
+//
+// ~xxdorothy/dorothy.git
+// ::: :/.config/hk.pkl
+//
+//
+
+//
+// https://hk.jdx.dev/configuration
+//
+// The git hooks, and the check and fix hooks that `mise run lint` and
+// `mise run format` run. The steps come from @chewygumxx/hk-config, with
+// Dorothy's own two: the secrets policy and the skills lock. `mise install`
+// installs the hooks; see [hooks] in .config/mise/config.toml.
+//
+
+amends "package://github.com/jdx/hk/releases/download/v2.14.0/hk@2.14.0#/Config.pkl"
+
+import "../node_modules/@chewygumxx/hk-config/steps.pkl" as cgxx
+
+// Refuses a plaintext secret or an unencrypted secrets.json.
+local secrets = new Step {
+    glob = "**/*"
+    check = "sh scripts/check-secrets.sh --check tracked {{files}}"
+    cache = true
+    cache_inputs = List("**/*", "scripts/check-secrets.sh", "bun.lock", ".config/mise/config.toml")
+}
+
+// skills-lock.json against the skills package.json and @dorothy/skills declare.
+local skills = new Step {
+    check = "DO_NOT_TRACK=1 bun run skills experimental_sync -y --agent claude-code codex --no-remote --frozen-lockfile --dry-run"
+    cache = true
+    cache_inputs = List("packages/skills/skills/**", "skills-lock.json", "package.json", "bun.lock")
+}
+
+// Not yet adopted: cspell, knip and secretlint, whose findings across the
+// existing tree await their own change; and packages, as nothing here is
+// published.
+local unadopted = Set("cspell", "knip", "packages", "secretlint")
+
+local lint = cgxx.lint.toMap().filter((name, _) -> !unadopted.contains(name)).toMapping()
+
+// Shell captured as evidence in reports is kept as it ran.
+local captures = List("docs/reports/**/probe/**")
+
+hooks {
+    ["check"] {
+        steps = (lint) {
+            ["shellcheck"] { exclude = captures }
+            ["shfmt"] { exclude = captures }
+            ["secrets"] = secrets
+            ["skills"] = skills
+        }
+    }
+    ["fix"] {
+        stage = false
+        steps = (cgxx.format) {
+            ["shfmt"] { exclude = captures }
+        }
+    }
+    // The staged files alone, quietly; the tests run in CI and on
+    // `mise run check`.
+    ["pre-commit"] {
+        stash = "git"
+        fix = false
+        stage = false
+        steps {
+            ["lint"] {
+                check = "mise run lint --staged"
+            }
+        }
+    }
+    ["commit-msg"] {
+        steps {
+            ["commitlint"] {
+                check = "mise run commit:lint \"{{ commit_msg_file }}\""
+            }
+        }
+    }
+}

@@ -26,8 +26,9 @@ if [ -n "$runtime" ] && [ -d "$runtime" ] && command -v jq >/dev/null 2>&1; then
     account=$(basename -- "${CLAUDE_CONFIG_DIR:-$HOME/.claude}")
     target="$runtime/claude-usage-$account.json"
     temporary="$target.$$"
+    at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
     if printf '%s' "$input" |
-        jq -c --arg at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+        jq -c --arg at "$at" \
             'select(.rate_limits != null or .context_window != null)
                 | {at: $at, rate_limits, context_window}' \
             >"$temporary" 2>/dev/null &&

@@ -108,6 +108,12 @@ const taskRun = (file: string, task: string): string[] => {
     return [tasks[task]?.run ?? []].flat();
 };
 
+// The check command of one of hk.pkl's own steps.
+const hkStep = (name: string): string | undefined =>
+    read(at(".config/hk.pkl")).match(
+        new RegExp(`local ${name} = new Step \\{[^}]*?check = "([^"]*)"`),
+    )?.[1];
+
 const linked = (dir: string): string[] =>
     existsSync(at(dir)) ? readdirSync(at(dir)).sort() : [];
 
@@ -201,9 +207,7 @@ describe("the skills", () => {
             expect(line).toStartWith("DO_NOT_TRACK=1 ");
         }
         expect(taskRun("other", "skills")[0]).toStartWith("DO_NOT_TRACK=1 ");
-        expect(taskRun("lint", "lint:skills")[0]).toStartWith(
-            "DO_NOT_TRACK=1 ",
-        );
+        expect(hkStep("skills")).toStartWith("DO_NOT_TRACK=1 ");
     });
 
     it("declares superpowers nowhere as a package", () => {
@@ -491,12 +495,11 @@ const preparedCheckout = (skills = "#!/bin/sh\nexit 0\n") => {
     const root = mkdtempSync(join(tmpdir(), "agent-memory-prepare-"));
     const bin = join(root, "bin");
     mkdirSync(bin);
-    mkdirSync(join(root, "node_modules", "husky"), { recursive: true });
-    mkdirSync(join(root, "scripts"));
-    for (const name of ["prepare.sh", "agent-memory.ts"]) {
+    mkdirSync(join(root, "node_modules", "skills"), { recursive: true });
+    mkdirSync(join(root, "scripts", "hooks"), { recursive: true });
+    for (const name of ["prepare.sh", "agent-memory.ts", "hooks/install.sh"]) {
         copyFileSync(at("scripts", name), join(root, "scripts", name));
     }
-    writeFileSync(join(bin, "husky"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
     writeFileSync(join(bin, "skills"), skills, { mode: 0o755 });
     writeFileSync(
         join(bin, "bun"),
@@ -740,9 +743,14 @@ const scratchRepository = () => {
     };
     git("init", "-q", "-b", "main");
     const run = (name: string, args: string[]) =>
-        Bun.spawnSync(["sh", at(".husky", name), ...args], { cwd: repo, env });
+        Bun.spawnSync(["sh", at("scripts/hooks", `${name}.sh`), ...args], {
+            cwd: repo,
+            env,
+        });
     return {
         commit,
+        dir: repo,
+        env,
         git,
         hook: (name: string, ...args: string[]) => run(name, args).exitCode,
         hookErrors: (name: string, ...args: string[]) =>
@@ -840,6 +848,33 @@ describe("the install hooks", () => {
             repo.git("merge", "-q", "feature");
             expect(repo.hook("post-merge", "0")).toBe(0);
             expect(repo.installs()).toEqual([]);
+        } finally {
+            repo.remove();
+        }
+    });
+
+    it("are registered in git's configuration, retiring husky's path", () => {
+        const repo = scratchRepository();
+        try {
+            repo.git("config", "core.hooksPath", ".husky/_");
+            for (let run = 0; run < 2; run++) {
+                const install = Bun.spawnSync(
+                    ["sh", at("scripts/hooks/install.sh")],
+                    { cwd: repo.dir, env: repo.env },
+                );
+                expect(install.exitCode).toBe(0);
+            }
+            for (const event of ["post-checkout", "post-merge"]) {
+                expect(repo.git("config", `hook.dorothy-${event}.event`)).toBe(
+                    event,
+                );
+                expect(
+                    repo.git("config", `hook.dorothy-${event}.command`),
+                ).toBe(
+                    `test ! -f scripts/hooks/${event}.sh || sh scripts/hooks/${event}.sh`,
+                );
+            }
+            expect(() => repo.git("config", "core.hooksPath")).toThrow();
         } finally {
             repo.remove();
         }

@@ -5,7 +5,7 @@
 #
 #
 # ~xxdorothy/dorothy.git
-# ::: :/.husky/post-merge
+# ::: :/scripts/hooks/post-merge.sh
 #
 #
 

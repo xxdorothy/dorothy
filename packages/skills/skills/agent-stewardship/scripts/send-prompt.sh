@@ -67,6 +67,7 @@ now() {
 valid() {
     case $1 in
     *[!A-Za-z0-9:_.-]* | '' | -*) usage ;;
+    *) ;;
     esac
 }
 
@@ -102,6 +103,7 @@ while [ $# -gt 0 ]; do
         --in) span=$2 ;;
         --deliver) deliver=$2 ;;
         --expect-pane) valid "$2" && expect=$2 ;;
+        *) ;;
         esac
         shift 2
         ;;
@@ -112,13 +114,13 @@ while [ $# -gt 0 ]; do
         ;;
     --deadline-at)
         [ $# -ge 2 ] && [ -n "$2" ] || usage
-        case $2 in *[!0-9]* | '' | 0) usage ;; esac
+        case $2 in *[!0-9]* | '' | 0) usage ;; *) ;; esac
         deadline_at=$2
         shift 2
         ;;
     --expect-process)
         [ $# -ge 3 ] && [ -n "$2" ] && [ -n "$3" ] || usage
-        case $2 in *[!0-9]* | '' | 0) usage ;; esac
+        case $2 in *[!0-9]* | '' | 0) usage ;; *) ;; esac
         valid "$3" || usage
         process=$2 started=$3
         shift 3
@@ -152,7 +154,8 @@ if [ -n "$deliver" ]; then
     tries=$(cat "$sends/$id.tries" 2>/dev/null || echo 0)
 
     log() {
-        printf '%s %s\n' "$(now)" "$1" >>"$sends/$id.log"
+        logged=$(now)
+        printf '%s %s\n' "$logged" "$1" >>"$sends/$id.log"
     }
 
     # refuse <why> <exit code>: tries again later, or gives up; exits.
@@ -216,7 +219,8 @@ if [ -z "$at$span" ]; then
     [ -z "$expect" ] || [ "$pane" = "$expect" ] ||
         die 5 "agent $agent is in pane $pane, not $expect"
     if [ -n "$deadline_at" ]; then
-        lock_pane "$pane" "$(deadline_lock_wait)"
+        lock_wait=$(deadline_lock_wait)
+        lock_pane "$pane" "$lock_wait"
     else
         lock_pane "$pane"
     fi
@@ -254,7 +258,8 @@ if [ -n "$at" ]; then
     *) die 2 "--at needs a date, as in \"2026-11-02 $at\"; a bare time recurs daily" ;;
     esac
     epoch=$(date -d "$at" +%s 2>/dev/null) || die 2 "cannot read the time $at"
-    [ "$epoch" -gt "$(date +%s)" ] || die 2 "$at is not in the future"
+    current=$(date +%s)
+    [ "$epoch" -gt "$current" ] || die 2 "$at is not in the future"
     # Read in the local zone, set in UTC, as zone abbreviations are numeric
     # (+03) in many zones. (`date -u -d "$at"` would read it as UTC.)
     resolved=$(date -u -d "@$epoch" '+%Y-%m-%d %H:%M:%S UTC')

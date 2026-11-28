@@ -11,7 +11,7 @@
       "source": "@dorothy/skills",
       "sourceType": "node_modules",
       "skillPath": "skills/agent-stewardship/SKILL.md",
-      "computedHash": "d20bf20bc22dfdd3f4a3e0e6c8350504d015c84060d97f131dedc4a2fd63e62c"
+      "computedHash": "cacc29aacfcfbc6992d9764edb815279c06d089294b5fbe6dc9d67673820a66f"
     },
     "brainstorming": {
       "source": "obra/superpowers",

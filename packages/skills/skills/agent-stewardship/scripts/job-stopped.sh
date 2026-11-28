@@ -42,6 +42,7 @@ dorothy-job-*-[0-9]*) ;;
 esac
 case $agent in
 *[!A-Za-z0-9:_.-]* | '') usage ;;
+*) ;;
 esac
 
 # The unit is dorothy-job-<name>-<epoch ns>, and a name may hold dashes.
@@ -50,11 +51,12 @@ name=${name%-*}
 
 jobs=$(state_dir)/jobs
 mkdir -p "$jobs" || die 1 "cannot make $jobs"
+stopped=$(now)
 {
     printf 'result=%s\n' "${SERVICE_RESULT:-}"
     printf 'exit_code=%s\n' "${EXIT_CODE:-}"
     printf 'exit_status=%s\n' "${EXIT_STATUS:-}"
-    printf 'at=%s\n' "$(now)"
+    printf 'at=%s\n' "$stopped"
 } >"$jobs/$unit.result.tmp"
 mv "$jobs/$unit.result.tmp" "$jobs/$unit.result"
 
@@ -73,7 +75,9 @@ err=$(printf '%s\n' "$message" |
     "$here/send-prompt.sh" --from "job:$name" --in 1s "$agent" 2>&1 >/dev/null) ||
     status=$?
 if [ "$status" -ne 0 ]; then
-    printf '%s send to %s failed (%s): %s\n' "$(now)" "$agent" "$status" \
-        "$(printf '%s' "$err" | tr '\n' ' ')" >>"$jobs/$unit.notify.log"
+    failed=$(now)
+    err=$(printf '%s' "$err" | tr '\n' ' ')
+    printf '%s send to %s failed (%s): %s\n' "$failed" "$agent" "$status" \
+        "$err" >>"$jobs/$unit.notify.log"
 fi
 exit 0

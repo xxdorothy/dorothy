@@ -17,14 +17,16 @@ import { join } from "node:path";
 
 // The types whose files carry the header; JSON, lockfiles, dotfiles and
 // the like cannot, or never did.
-const HEADED = /\.(ts|tsx|mts|sh|toml|ya?ml|jsonc|md)$/;
+const HEADED = /\.(ts|tsx|mts|sh|toml|ya?ml|jsonc|md|pkl)$/;
 
 // Headed types that are not the repository's own writing: captured probe
 // scripts, agent memory entries (written by Dorothy's project sync and by
-// clients' memory, in their own format), the template GitHub reads, and
+// clients' memory, in their own format), the template GitHub reads,
 // third-party files vendored byte for byte, each with its own licence and
-// provenance note beside it.
+// provenance note beside it; and the links to a shared package's mise
+// task templates, which carry that package's header.
 const EXEMPT = [
+    /^\.config\/mise\/conf\.d\//,
     /^docs\/reports\/.+\/probe\//,
     /^packages\/cli\/assets\/pi\/vendor\/[^/]+\/(?!PROVENANCE\.md$)/,
     /^docs\/memory\//,

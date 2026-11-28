@@ -44,6 +44,7 @@ usage() {
 valid() {
     case $1 in
     *[!A-Za-z0-9:_.-]* | '' | -*) usage ;;
+    *) ;;
     esac
 }
 
@@ -64,14 +65,14 @@ while [ $# -gt 0 ]; do
         ;;
     --expect-process)
         [ $# -ge 3 ] && [ -n "$2" ] && [ -n "$3" ] || usage
-        case $2 in *[!0-9]* | '' | 0) usage ;; esac
+        case $2 in *[!0-9]* | '' | 0) usage ;; *) ;; esac
         valid "$3" || usage
         process=$2 started=$3
         shift 3
         ;;
     --deadline-at)
         [ $# -ge 2 ] && [ -n "$2" ] || usage
-        case $2 in *[!0-9]* | '' | 0) usage ;; esac
+        case $2 in *[!0-9]* | '' | 0) usage ;; *) ;; esac
         deadline_at=$2
         shift 2
         ;;
@@ -88,10 +89,12 @@ while [ $# -gt 0 ]; do
         --lock-wait)
             case $2 in
             *[!0-9]* | 0*) usage ;;
+            *) ;;
             esac
             [ "$2" -le 60 ] || usage
             wait=$2
             ;;
+        *) ;;
         esac
         shift 2
         ;;

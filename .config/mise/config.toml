@@ -17,7 +17,7 @@
 # Intrinsic
 # ----------
 
-min_version = "2026.11.4"
+min_version = "2026.11.6"
 
 # ------
 # Tools
@@ -41,7 +41,7 @@ node = "24"
 "aqua:editorconfig-checker/editorconfig-checker" = "4.0.2"
 
 # TOML
-"aqua:tombi-toml/tombi" = "1.5.5"
+"aqua:tombi-toml/tombi" = "1.11.3"
 
 # Shell
 "aqua:koalaman/shellcheck" = "0.11.0"
@@ -61,6 +61,9 @@ node = "24"
 # GitHub Actions
 "aqua:rhysd/actionlint" = "1.7.12"
 
+# Git hooks and the lint and format steps
+"aqua:jdx/hk" = "2.14.0"
+
 # ---------
 # Settings
 # ---------
@@ -68,12 +71,19 @@ node = "24"
 [settings]
 experimental = true  # the git:: remote task needs it
 
+# Installs the packages hk.pkl imports, then the git hooks. CI installs
+# its own packages and needs no hooks.
+[[hooks.postinstall]]
+run = 'test -n "${CI-}" || { bun ci && hk install --mise; }'
+
 # ------------
 # Environment
 # ------------
 
 [env]
-YAMLLINT_CONFIG_FILE = "{{config_root}}/node_modules/@chewygumxx/yamllint-config/config.yaml"
+# A change to shared configuration can change the result for any file, so
+# it widens lint and format to every file. Not packages/: it is the code.
+CGXX_WIDEN_ON = "bun.lock .config .biome.json .editorconfig .markdownlint-cli2.jsonc .shellcheckrc"
 
 # ------
 # Tasks
