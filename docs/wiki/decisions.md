@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-22
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Decisions
 description: >-
@@ -1174,6 +1174,26 @@ The machinery behind these rules is on
 - **Sources**:
   [workspace modularity spec](../specs/2026-10-09-workspace-modularity-design.md#decisions),
   [report](../reports/2026-10-09-workspace-modularity.md).
+
+### Dorothy remains a modular monorepository
+
+- **Context**: Fragmentation was considered to reduce agentic context
+  demand, and the proposed split blocked functional development.
+- **Alternatives**: Separate documentation or independent repositories
+  for the packages.
+- **Choice**: The user on 2026-11-29 retained the monorepository and
+  removed the split as a gate. Keep source, tests and documentation
+  together with the existing package contracts.
+- **Reason**: The user reports no worthwhile measured benefit from
+  fragmentation. Improve selective context and dependency discovery
+  instead. The external evaluation was not independently inspected.
+- **Cost**: Repository size grows; agents must select relevant context.
+  Private evidence may still require separate storage.
+- **Standing**: accepted. Resume the roadmap; Nx and ADR tooling are
+  optional. Reconsider extraction only for demonstrated access,
+  ownership, distribution, release or efficiency requirements.
+- **Sources**: the user's ruling, 2026-11-29;
+  [settlement and handoff](../reports/2026-11-29_monorepository-settlement.md).
 
 ### Guidance is AGENTS.md files, and every agentic asset is declared here
 

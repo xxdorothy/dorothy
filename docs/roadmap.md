@@ -1,6 +1,6 @@
 ---
 ctime: 2026-10-09
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Roadmap
 description: >-
@@ -52,7 +52,9 @@ or estimates.
 
 ## Ahead
 
-In order; the first is next.
+In order; the first is next. The user retained the monorepository on
+2026-11-29: the proposed split is no longer a gate. See the
+[settlement and handoff](./reports/2026-11-29_monorepository-settlement.md).
 
 ### Dorothy's Memory
 
@@ -817,3 +819,8 @@ In order of completion.
   last holds limits no phase depends on. The flake and the failing tests
   are the nearest to Ahead, and rise if the flake recurs or an agent's
   `bun test` hides a regression.
+- 2026-11-29: The user retained the modular monorepository and removed the
+  proposed split as an external gate. Memory remains first in Ahead;
+  unresolved live checks and earlier revision obligations remain. Nx and
+  ADR tooling are optional trials, not phase requirements. See the
+  [settlement](./reports/2026-11-29_monorepository-settlement.md).

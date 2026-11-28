@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Repository workflow
 description: >-
@@ -31,11 +31,11 @@ test, the test is named, since a rule only prose states can drift.
 
 ## Package boundaries
 
-Dorothy is eight Bun workspace packages under `packages/`. `core` holds the
+Dorothy is nine Bun workspace packages under `packages/`. `core` holds the
 contracts the others meet on and `identity` who Dorothy is; `memory` and
 `tui` depend on `core` alone, `agent` and `gateway` on it and `identity`,
-never on each other, `eval` on `core` and `memory`; `cli` on all but
-`eval`, and wires them. A package exports only the
+never on each other, `eval` on `core` and `memory`; `skills` is independent;
+`cli` depends on all but `eval`, and wires them. A package exports only the
 entry points its `package.json` names and imports only what it declares,
 as Bun's isolated linker fails an undeclared or internal import, and
 `workspace.test.ts` pins the graph and the entry points. The graph, each
@@ -51,6 +51,12 @@ because the old links linger:
 ```sh
 rm -rf node_modules packages/*/node_modules && bun install
 ```
+
+The user retained the modular monorepository on 2026-11-29. No package
+or documentation extraction is a prerequisite for functional development.
+See the [settlement](../../reports/2026-11-29_monorepository-settlement.md)
+for task scope and optional graph tooling. Read package guidance and
+current wiki topics first; consult historical records on demand.
 
 ## Worktrees
 
@@ -112,8 +118,9 @@ runs `mise run lint:commit`, which is commitlint. Each is one line, and
 `--no-verify` skips both, kept for a granular commit that cannot yet pass
 alone. Commits are granular, in Conventional Commits, with the package
 names, `config`, `claude` and `api` as scopes and agent assets under the
-`ai` type, and no agent trailers. A header is at most 50 characters and a
-body line at most 72, limits that come from the shared commitlint config
+`ai` type. Agent commits carry provenance trailers as prescribed by
+[`AGENTS.md`](../../../AGENTS.md#commits). A header is at most 50 characters
+and a body line at most 72, limits from the shared commitlint config
 and that a plan's commit steps must keep too
 ([plan commit headers](../../memory/plan-commit-headers.md)).
 
