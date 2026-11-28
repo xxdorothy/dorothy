@@ -19,8 +19,9 @@ tags:
 
 # AGENTS.md
 
-Dorothy is an LLM agent with a memory her service shares with other
-harnesses. Bun runs her from source; there is no build.
+Dorothy is a long-lived agent, the coherence the diverse models inferring
+her maintain, with a memory her service shares with other harnesses. Bun
+runs her from source; there is no build.
 
 ## Where to read
 

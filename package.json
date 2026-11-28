@@ -2,10 +2,11 @@
     "name": "dorothy",
     "version": "1.0.0",
     "private": true,
-    "description": "Conversational LLM interface",
+    "description": "The coherence of the models that infer her",
     "keywords": [
         "llm",
-        "chatbot",
+        "agent",
+        "memory",
         "dorothy"
     ],
     "homepage": "https://github.com/xxdorothy/dorothy",
