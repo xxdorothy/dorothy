@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Harnesses
 description: >-
@@ -33,7 +33,10 @@ are explained under
 [identity, harnesses and delivery](../topics/identity-and-harnesses.md).
 On 2026-11-03 the user made Pi the highest priority, which supersedes its
 earlier exclusion, so Pi is a fifth host, [below](#pi)
-([roadmap](../../roadmap.md#done)).
+([roadmap](../../roadmap.md#done)). On 2026-11-29 the user backlogged
+Hermes and OpenClaw: what is built for them stays, but their probes,
+delivery and readers wait among the roadmap's candidates
+([decision](../decisions.md#the-four-harnesses-are-claude-code-codex-openclaw-and-hermes)).
 
 This is the one page that holds each host's state. For every host it
 separates four things, because they differ in state even within one host:
@@ -49,9 +52,8 @@ The states are built, designed, awaiting a live check and waiting on the
 user. "Built" means code and tests exist. Where the roadmap, a report and
 the code disagree, this page follows the most recent record that verifies
 the point and says so. The roadmap's Status for Dorothy's Memory, which
-this page agrees with, reads: Delivery Built for Codex and Hermes, its
-live probes waiting on the user, and OpenClaw's waiting on its install;
-Claude Code was delivered earlier.
+this page agrees with, reads: Delivery Built for Codex, its live probe
+waiting on the user's sign-in; Claude Code was delivered earlier.
 
 In the host profiles, which are data in
 [`packages/memory/src/hosts/`](../../../packages/memory/src/hosts/),
@@ -182,9 +184,12 @@ not captured from a running Codex, so it too is awaiting the live check.
 
 ### Live checks
 
-Waiting on the user. As the delivery report recorded on 2026-11-01,
-Codex's usage was spent until 5 November (17:23, Melbourne), and the probe
-needs the user to sign a temporary home in and trust the hooks. The
+Waiting on the user's sign-in. Codex itself is available; the delivery
+report of 2026-11-01 waited for its usage to reset on 5 November, long
+past. The probe runs Codex on a temporary `CODEX_HOME`, so neither
+Dorothy's hooks nor their trust touch the user's own Codex
+configuration, and that home needs the user's own `codex login`; copying
+the user's credentials in would risk the token their own Codex uses. The
 [delivery report's Waiting section](../../reports/2026-11-01-delivery.md#waiting-for-the-user)
 lists what the run will show: the trust screen, whether hooks given as
 session flags are offered for trust at all (otherwise a plugin route
@@ -195,8 +200,8 @@ these full delivery checks.
 
 ## OpenClaw
 
-Designed only. Nothing is built for OpenClaw's delivery, and it is not
-called built anywhere here.
+Backlogged on 2026-11-29. Designed only: nothing is built for OpenClaw's
+delivery, and it is not called built anywhere here.
 
 ### Persona
 
@@ -226,14 +231,15 @@ plugin and MCP) is the only code touching it.
 
 ### Live checks
 
-Waiting on its install. OpenClaw is not installed on the user's machine,
-so no probe of it has run. The roadmap's Status for Dorothy's Memory says
-OpenClaw's is waiting on its install.
+Backlogged. No probe of OpenClaw has run. It was said to wait on its
+install, though `~/.local/bin/openclaw` has existed since 2026-11-03
+([unfinished work](../../reports/2026-11-22_unfinished-work.md#2-dorothys-memory-still-open)).
 
 ## Hermes Agent
 
-Delivery built, with no live check yet: the provider and profile are built
-and tested, and the live probe waits on the user's sign-in.
+Backlogged on 2026-11-29. Delivery built, with no live check: the
+provider and profile are built and tested, and the live probe waits in
+the backlog.
 
 ### Persona
 
@@ -279,7 +285,7 @@ to the process's own; that suits Hermes's CLI and may not suit its gateway
 
 ### Live checks
 
-Waiting on the user. The step needs the user to sign a temporary Hermes
+Backlogged. The step would need the user to sign a temporary Hermes
 home in, and spends a short turn on the user's Hermes model. The
 [delivery report's Waiting section](../../reports/2026-11-01-delivery.md#waiting-for-the-user)
 lists it: whether the cloned profile signs in, whether her `SOUL.md` and

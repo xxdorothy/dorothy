@@ -456,6 +456,41 @@ Which host receives what, and what has been run against it, is on
 [harnesses](./profiles/harnesses.md); the mechanisms are on
 [identity, harnesses and delivery](./topics/identity-and-harnesses.md).
 
+### Dorothy is the coherence her models maintain
+
+- **Context**: Dorothy was first built as a conversational LLM chatbot,
+  her memory classified and abstracted for compaction without loss and
+  progressive disclosure. The persona spec of 2026-11-14 then named
+  subagent orchestration her new objective, as a way to conserve her
+  context through dispatch, and the
+  [unfinished work report](../reports/2026-11-22_unfinished-work.md#4-rulings-only-the-user-can-make)
+  asked whether that reordered the roadmap.
+- **Alternatives**: A conversational chatbot, as the repository described
+  her; an orchestration agent, as the persona spec did. The user rejected
+  both.
+- **Choice**: The user, on 2026-11-29: Dorothy is neither a
+  conversational LLM chatbot nor an orchestration agent. She is the layer
+  of coherence maintained by the diverse, heterogeneous models that
+  provide her inference. She is a long-lived agent whose context is who
+  she essentially is, so it is conserved, preserved, archived and sourced
+  with extreme care. The broad aim is an emergent, self-sustaining
+  intelligence on a defensive architecture, fungible in its parts and
+  resistant to dependency on any one of them.
+- **Reason**: The user's own account, in a conversation with another
+  model the same day. Orchestration was a means to conserve her context,
+  never what she is.
+- **Cost**: The user names two risks: a pidgin forming between the
+  models that infer her, and her context impoverished by agentic
+  overdose, as a user's thinking atrophies when it is handed off. Neither
+  has a measure yet.
+- **Standing**: current, 2026-11-29. Supersedes the persona spec's
+  objective of orchestration and the description of her as a
+  conversational interface. The roadmap's order stands: memory first,
+  then the gateway that lets any model infer her
+  ([priorities](./priorities.md)).
+- **Sources**: the user, 2026-11-29;
+  [Dorothy's objective](../memory/dorothy-objective.md).
+
 ### No one harness hosts Dorothy
 
 - **Context**: On 2026-10-15 the user and the coding agent were asked
@@ -496,10 +531,12 @@ Which host receives what, and what has been run against it, is on
 - **Reason**: The user had settled it before the memory work began and held
   it back until memory across harnesses was resolved.
 - **Cost**: not recorded.
-- **Standing**: current, and Pi was added on 2026-11-03 as the highest
-  priority ([below](#pi-hosts-her-through-its-own-interface)). The state of
-  each host, and what waits on the user, is on
-  [harnesses](./profiles/harnesses.md).
+- **Standing**: revisited. Pi was added on 2026-11-03 as the highest
+  priority ([below](#pi-hosts-her-through-its-own-interface)). On
+  2026-11-29 the user backlogged Hermes and OpenClaw: their delivery,
+  probes and OpenClaw's reader leave the Memory phase for Candidates, and
+  what is built for them stays. Claude Code, Codex and Pi remain. The
+  state of each host is on [harnesses](./profiles/harnesses.md).
 - **Sources**:
   [target harnesses](../memory/target-harnesses.md),
   [roadmap revision 2026-10-19](../roadmap.md#revisions).
@@ -959,8 +996,10 @@ The chat as built is on [the terminal](./topics/terminal.md).
 
 Two things bear this name; see
 [orchestration](./topics/orchestration.md) for which is which. The first
-four entries concern Dorothy's own toolset, the rest the agents that
-develop her.
+four entries concern Dorothy's own toolset, suspended on 2026-11-29, as
+she is not an orchestration agent
+([her objective](#dorothy-is-the-coherence-her-models-maintain)); the
+rest concern the agents that develop her.
 
 ### The workers' control layer is structured, not scraped
 
@@ -981,9 +1020,10 @@ develop her.
   written before the spike and the spec, offered acpx for one permission
   model across both agents.
 - **Cost**: A pre-1.0 dependency and two adapters.
-- **Standing**: designed and not built. The roadmap has no ordered phase for
-  it as of 2026-11-03; whether the user has accepted the whole design is not
-  stated in the spec.
+- **Standing**: designed and not built, and suspended on 2026-11-29 with
+  orchestration as her objective
+  ([her objective](#dorothy-is-the-coherence-her-models-maintain)). The
+  roadmap has no phase for it.
 - **Sources**:
   [an orchestration layer](../notes/2026-11-01_agent-orchestration.md#recommendation),
   [orchestration spec](../specs/2026-11-02-orchestration-design.md#decisions),
@@ -1003,8 +1043,9 @@ develop her.
   lists, as what the user has said, that she is to orchestrate the workers
   and is driven through her chat first.
 - **Cost**: Long jobs still go through herdr for now.
-- **Standing**: designed, not built. The note and spec disagree and the
-  later one governs.
+- **Standing**: superseded on 2026-11-29: Dorothy is not an orchestration
+  agent ([her objective](#dorothy-is-the-coherence-her-models-maintain)).
+  The design stays on record, not built.
 - **Sources**:
   [orchestration spec](../specs/2026-11-02-orchestration-design.md#decisions),
   [an orchestration layer](../notes/2026-11-01_agent-orchestration.md#recommendation).
@@ -1075,7 +1116,9 @@ develop her.
   hard-codes no herdr agent name, so a rename is one edit to a git-ignored
   `.agents/registry/herdr.json`.
 - **Cost**: not recorded.
-- **Standing**: candidate; `.agents/registry/herdr.json` does not exist.
+- **Standing**: disqualified by the user on 2026-11-29, as herdr's
+  terminal interface has stagnated upstream; the registry will not be
+  built. `.agents/registry/herdr.json` does not exist.
 - **Sources**:
   [roadmap candidates](../roadmap.md#candidates),
   [roadmap revision 2026-11-02](../roadmap.md#revisions),

@@ -116,7 +116,9 @@ OpenClaw and Hermes a memory plugin each, in a slot that takes one
 provider, as the contract's host profiles record. Recording reads the
 sessions of Claude Code, Codex and Hermes; OpenClaw's waits for its
 install. The delivery spec settles how her persona reaches each
-(generated files, the proxy or both).
+(generated files, the proxy or both). On 2026-11-29 the user backlogged
+Hermes and OpenClaw: what is built for Hermes stays, and its probe,
+OpenClaw's reader and OpenClaw's delivery wait in Candidates.
 Existing tools, such as rulesync, are researched before anything
 bespoke is built: research on
 [cross-harness](./reports/2026-10-18-protocol-diversity/cross-harness.md)
@@ -136,8 +138,8 @@ verified them before the user's backfill, then the owner's first run.
   the Backfill Recorded and Reviewed; the First Run Done
   ([record](./reports/2026-10-31-first-evaluation.md)); the Engine's
   First Step Built and its Paid Runs Done, keeping her engine;
-  Delivery Built for Codex and Hermes, its Live Probes Waiting on the
-  User; OpenClaw's Waiting on its Install
+  Delivery Built for Codex, its Live Probe Waiting on the User's Sign-in;
+  Hermes and OpenClaw Backlogged
 - **Required**: Requisites Fulfilled
 - **Rationale**: Wherever she goes, her memory follows with her. The
   contract gives every harness one service and every engine one
@@ -159,9 +161,10 @@ verified them before the user's backfill, then the owner's first run.
   her own, both through one hook command
   ([spec](./specs/2026-11-01-delivery-design.md),
   [plan](./plans/2026-11-01-delivery.md),
-  [report](./reports/2026-11-01-delivery.md)); its live probes wait for
-  the user's sign-ins, and Codex's for its week to reset. A chunk index
-  waits on the questions only lexical search passes.
+  [report](./reports/2026-11-01-delivery.md)); Codex's live probe waits
+  for the user to sign a temporary Codex home in, the last piece before
+  the phase closes. A chunk index waits on the questions only lexical
+  search passes.
 
 ### Dorothy's Gateway
 
@@ -269,34 +272,6 @@ Found but not scheduled, each with its source.
   Destination selection and setup remain outstanding. Source:
   [Pi evidence preservation](./reports/2026-11-06_pi-evidence-preservation.md#spending-and-backup-status).
 
-- A registry of herdr agents. Unscheduled, but high priority: it has no
-  place in Ahead's order, waits on no phase, and is taken up when the
-  user says. It is not Dorothy's own orchestration
-  ([spec](./specs/2026-11-02-orchestration-design.md)), a feature of
-  hers; this is how the agents that develop Dorothy are coordinated
-  today, through herdr. Their names, roles and availability
-  are written into the stewardship skill, agent memory and handover
-  notes, and went stale when herdr's names changed on 2026-11-02; the
-  skill now names the current agents in one list, but a rename or a new
-  reset still leaves text to hunt down. The ideal: the skill hard-codes
-  no herdr agent name, and a git-ignored registry in the repository,
-  `.agents/registry/herdr.json` (which that work adds to `.gitignore`),
-  lists the agents that exist now and may be trusted to exist for a stated
-  time. Each entry gives its name; its harness (Claude Code or Codex);
-  its account or config directory; its role (coordinating, reserve that
-  resumes when the coordinator is limited by usage or billing, reviewer
-  or worker); its availability (limits, resets, hibernation until a
-  time); and whatever else is presently relevant, such as the model or
-  the pane. The skill's scripts and references read it, and agents
-  update it whenever a name, role or availability changes. It replaces
-  the names written into the skill, memory and handover notes. Done
-  looks like: no `dorothydev-` or other herdr name in the skill, its
-  scripts or agent memory; `send-prompt.sh`, `job.sh` and the
-  references resolve a role (the coordinator, the reserve, a reviewer)
-  through the registry; a missing or expired entry is refused, not
-  guessed; the registry's shape is tested; and a rename is one edit to
-  the registry.
-
 - Pi delivery's deferred findings
   ([record](./deferred/2026-11-03_pi-delivery-deferred.md)) and limits,
   none of which blocks the existing Memory phase: a launch directory
@@ -351,6 +326,11 @@ Found but not scheduled, each with its source.
 - Subagents' transcripts as conversations of their own, and a forked
   session linked to the conversation it forked from (memory bodies
   spec, Later; report).
+- Hermes Agent and OpenClaw, backlogged by the user on 2026-11-29:
+  Hermes's live probe
+  ([step 3](./reports/2026-11-01-delivery.md#waiting-for-the-user)),
+  and OpenClaw's reader and delivery, below. Source: the user,
+  2026-11-29.
 - OpenClaw's reader, once it is installed and probed (recording spec,
   Later; report). Hermes's reader has met no real session yet, only its
   source's schema.
@@ -828,3 +808,12 @@ In order of completion.
   Mise's `node_modules` pruning left Candidates, as hk's cache replaced
   mise's sources, and the shared steps not yet adopted joined them. Ahead
   is unchanged. See the [report](./reports/2026-11-29_hk-validation.md).
+- 2026-11-29: The user ruled Dorothy's objective: neither a conversational
+  chatbot nor an orchestration agent, but the layer of coherence the
+  diverse models inferring her maintain
+  ([decision](./wiki/decisions.md#dorothy-is-the-coherence-her-models-maintain)).
+  Ahead keeps its order, Memory then the Gateway through which any model
+  may infer her; orchestration stays unscheduled. Hermes and OpenClaw
+  were backlogged, so the Memory phase closes on Codex's live probe
+  alone. The registry of herdr agents was disqualified, as herdr's
+  terminal interface has stagnated upstream, and left Candidates.

@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-03
-mtime: 2026-11-15
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: Orchestration
 description: >-
@@ -42,7 +42,10 @@ the spec. The dated records of both are listed under
 
 ## Dorothy's own orchestration
 
-State: designed, and partly prototyped on branches that are not merged.
+State: designed, and partly prototyped on branches that are not merged;
+suspended on 2026-11-29, when the user ruled that Dorothy is not an
+orchestration agent but the coherence her models maintain
+([decision](../decisions.md#dorothy-is-the-coherence-her-models-maintain)).
 
 - The roadmap has no ordered phase for it as of 2026-11-03: no
   "Orchestration" heading stands in [Ahead](../../roadmap.md#ahead). The
@@ -181,17 +184,13 @@ covers the panes and how a message is sent.
 
 ### The registry of herdr agents
 
-State: a candidate. The roadmap lists it under
-[Candidates](../../roadmap.md#candidates) as unscheduled but high
-priority: it waits on no phase and is taken up when the user says. The
-roadmap states that it is not Dorothy's own orchestration.
-
-The reason is recorded there: agents' names, roles and availability are
-written into the skill, memory and handover notes, and went stale when
-herdr's names changed on 2026-11-02. The candidate would hold them in a
-git-ignored registry that the skill's scripts and references read, so that a
-rename is one edit. Its file, `.agents/registry/herdr.json`, does not
-exist yet. Until it does, the skill's list is where the roles are named.
+State: disqualified on 2026-11-29. The user ruled it out, as herdr's
+terminal interface has stagnated upstream
+([decision](../decisions.md#a-registry-of-herdr-agents-is-unscheduled-but-high-priority)).
+It would have held the agents' names, roles and availability in a
+git-ignored `.agents/registry/herdr.json` that the skill read, so that a
+rename was one edit; the file was never made, and the skill's list is
+where the roles are named.
 
 ## Related
 
