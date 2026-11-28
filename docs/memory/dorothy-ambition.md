@@ -35,6 +35,9 @@ Stated 2026-10-15, after comparing OpenClaw and Hermes Agent as hosts:
 either project. The objectives report,
 `docs/reports/2026-10-15-objectives.md`, records it all.
 
+Since 2026-11-29 her [objective](./dorothy-objective.md) frames these:
+she is the coherence her diverse models maintain.
+
 **How to apply:** weigh designs against these aims, prefer Dorothy as
 the core borrowing open formats (SKILL.md, MCP), and treat provider
 fallback as a requirement of Model Providers. See

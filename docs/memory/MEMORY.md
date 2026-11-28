@@ -7,6 +7,8 @@
 - [Nested claude inherits the session](./nested-claude-session-env.md)
   claude run from a session's Bash inherits its project and session; -c and
   purge then hit the live session
+- [Dorothy's objective](./dorothy-objective.md)
+  The coherence her diverse models maintain; not a chatbot or orchestrator
 - [Dorothy's ambition](./dorothy-ambition.md)
   One adaptable Dorothy: extensible, remembering; Anthropic in doubt
 - [Plan commit headers](./plan-commit-headers.md)
@@ -18,7 +20,7 @@
 - [Protocol-diverse Dorothy](./protocol-diverse-dorothy.md)
   Shared identity and memory; Pi's old exclusion was superseded on 3 November
 - [Target harnesses](./target-harnesses.md)
-  Pi comes first, in its own interface, to steward Claude Code and Codex
+  Pi, Claude Code and Codex; Hermes and OpenClaw backlogged on 29 November
 - [Codex full send](./codex-full-send.md)
   Approve every Codex prompt yourself; never relay one to the user
 - [Trust to proceed](./trust-to-proceed.md)
