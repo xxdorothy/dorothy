@@ -1,6 +1,6 @@
 ---
 ctime: 2026-11-14
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: packages/skills/AGENTS.md
 description: >-
@@ -34,7 +34,7 @@ through `node_modules/@dorothy/skills`, links `.claude/skills/<name>` to
 that, and records it in `skills-lock.json` as this package's. Neither
 directory is edited by hand; after adding, editing, renaming or removing
 a skill, run `mise run skills` (or `bun install`) and commit
-`skills-lock.json`, or `lint:skills` fails the commit.
+`skills-lock.json`, or the `skills` lint step fails the commit.
 
 ## Entry points and imports
 

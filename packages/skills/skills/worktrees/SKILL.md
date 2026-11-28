@@ -5,7 +5,7 @@ description: >-
   worktree of Dorothy's repository, or when a worktree lacks skills, git
   hooks or node_modules.
 ctime: 2026-10-15
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 tags:
   - agents
@@ -40,11 +40,13 @@ made, set up, checked, repaired and removed.
 ## What sets one up
 
 One declared step makes a worktree come out whole, whichever tool made
-it: [`.husky/post-checkout`](../../../../.husky/post-checkout). Git checks
-a new worktree out from the null commit, and the hook runs
-`bun install`. That brings the dependencies, the git hooks, the links to
-every skill and auto memory's pointer, none of which a worktree shares.
-Nothing is copied from the main checkout.
+it: the [post-checkout hook](../../../../scripts/hooks/post-checkout.sh),
+registered in git's configuration by `prepare`. Git checks a new
+worktree out from the null commit, and the hook runs `bun install`. That
+brings the dependencies, the links to every skill and auto memory's
+pointer, none of which a worktree shares. The git hooks live in the
+shared configuration, so every worktree has them; hk's lint them once
+`node_modules` exists. Nothing is copied from the main checkout.
 
 `prepare` links every skill: the repository's own, in `@dorothy/skills`
 (`packages/skills/`), offline, and the third-party ones `package.json`'s
@@ -53,7 +55,10 @@ as offline, warns and links the package's skills alone.
 
 ## Checking one
 
-- `.husky/_/pre-commit` exists: without it, no commit is linted.
+- `git config --get-regexp '^hook\.'` lists `hk-pre-commit` and
+  `dorothy-post-checkout`: without them, no commit is linted or no
+  worktree installed. `mise install` restores hk's; `bun install` the
+  other.
 - `ls .claude/skills` lists what the main checkout's does.
 - `bun test agents.test.ts` passes.
 
