@@ -14,9 +14,9 @@
     "owner": "xxdorothy",
     "slug": "xxdorothy/dorothy",
     "default_branch": "main",
-    "description": "Conversational LLM interface",
+    "description": "The coherence of the models that infer her",
     "category": "dorothy",
-    "topics": ["llm", "chatbot", "dorothy"],
+    "topics": ["llm", "agent", "memory", "dorothy"],
     "visibility": "public",
     "license": {
         "filepath": "./LICENSE",
