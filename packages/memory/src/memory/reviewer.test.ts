@@ -46,8 +46,8 @@ beforeEach(async () => {
                 interrupted: false,
             },
         ]
-            .map((event) => JSON.stringify(event))
-            .join("\n") + "\n",
+            .map((event) => `${JSON.stringify(event)}\n`)
+            .join(""),
     );
 });
 afterEach(async () => {
