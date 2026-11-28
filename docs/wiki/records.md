@@ -414,6 +414,9 @@ first.
 - [Monorepository
   settlement](../reports/2026-11-29_monorepository-settlement.md): Report.
   The user's ruling, context scope and optional tooling trial.
+- [Validation through hk](../reports/2026-11-29_hk-validation.md): Report.
+  The shared hk steps and mise templates replacing husky and Dorothy's
+  tasks, with the pre-commit hook's timings before and after.
 
 ## Related
 

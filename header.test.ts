@@ -8,8 +8,8 @@
 //
 //
 
-// The house header on every file of a headed type. `lint:header` fails a
-// header that is out of sync; this fails a file with none.
+// The house header on every file of a headed type. The `headers` lint
+// step fails a header that is out of sync; this fails a file with none.
 
 import { afterAll, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";

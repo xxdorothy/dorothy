@@ -1,6 +1,6 @@
 ---
 ctime: 2026-10-12
-mtime: 2026-11-22
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: AGENTS.md
 description: >-
@@ -33,9 +33,12 @@ harnesses. Bun runs her from source; there is no build.
 ## Commands
 
 - `bun run check`: everything CI runs. `mise run test`: the tests alone.
-  `mise tasks ls`: the rest; `lint`, `format` and `check` take `--staged`.
+  `mise tasks ls`: the rest. `lint` and `format` run hk over the changed
+  files; `--staged`, `--all` or `--step <name>` narrow or widen them.
+  Pre-commit lints the staged files alone; the tests run in CI.
 - `bun run dev -- --help`: the CLI from source, and its commands.
-- `bun install` links the skills and points Claude's memory at
+- `mise install` installs the tools, the packages and hk's git hooks.
+  `bun install` links the skills and points Claude's memory at
   `docs/memory`; `mise run skills` relinks.
 - After removing a `@dorothy` dependency, reinstall from clean:
   `rm -rf node_modules packages/*/node_modules && bun install`.
@@ -55,7 +58,7 @@ harnesses. Bun runs her from source; there is no build.
 - Declare every agentic asset here (`package.json`'s `skills`,
   `packages/skills/`); a harness's own settings are the user's.
 - A new file copies the house header from a sibling;
-  `mise run format:header` syncs it.
+  `mise run format --step headers` syncs it.
 - Keep each kind of data in its own file beside what it concerns; a split
   pair has a check that fails when the two disagree.
 - A change to a package's architecture updates its `AGENTS.md`, and one
@@ -92,4 +95,5 @@ skill names other paths, these rules win.
 Agent memory is `docs/memory/`, indexed by `MEMORY.md`: a list item
 linking `./<name>.md`, its hook on the next line. Link memories by
 relative Markdown link, never `[[...]]`, with no em dash and no line over
-80 characters: `lint:md` and `lint:emdash` reject them.
+80 characters: the `remark`, `markdownlint` and `emdash` lint steps
+reject them.

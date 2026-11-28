@@ -1340,7 +1340,8 @@ The machinery behind these rules is on
   configuration, as with yamllint's. The editor plugins for markdownlint
   and remark look for theirs at the root or in `package.json`'s
   `remarkConfig`, so they lose the house presets.
-- **Standing**: current
+- **Standing**: current, amended 2026-11-29: `.husky/` is gone, and
+  markdownlint's configuration returned to the root for hk's shared step
   ([build configuration](./topics/build-configuration.md#where-configuration-lives)).
 - **Sources**:
   [build configuration spec](../specs/2026-11-10_build-configuration.md#where-configuration-lives).
@@ -1385,8 +1386,8 @@ The machinery behind these rules is on
   about 12 seconds, as mise walked `node_modules` for each `**/*` source
   set; mise 2026.11.6 prunes a trailing `!**/node_modules/**`, which the
   skill will adopt once benchmarked.
-- **Standing**: current
-  ([build configuration](./topics/build-configuration.md#mise)).
+- **Standing**: superseded on 2026-11-29 by
+  [validation runs through the shared hk steps](#validation-runs-through-the-shared-hk-steps-and-mise-templates).
 - **Sources**:
   [build configuration spec](../specs/2026-11-10_build-configuration.md#approaches).
 
@@ -1404,9 +1405,44 @@ The machinery behind these rules is on
   enough to read whole.
 - **Cost**: The repository departs from `configuring-mise-tasks`, which
   still names one `tasks.toml`.
-- **Standing**: current
+- **Standing**: current, amended 2026-11-29: the `lint` and `format`
+  families went with
+  [the shared hk steps](#validation-runs-through-the-shared-hk-steps-and-mise-templates);
+  `standard`, `bun` and `other` remain
   ([build configuration](./topics/build-configuration.md#mise)).
 - **Sources**: not recorded.
+
+### Validation runs through the shared hk steps and mise templates
+
+- **Context**: The pre-commit hook ran `mise run check --staged`: every
+  `lint:*` task and the whole test suite. A commit took over three
+  minutes (about 22 seconds of mise hashing sources with nothing staged,
+  158 of tests), against the granular commits the repository asks for,
+  and its output filled an agent's context.
+- **Alternatives**: Keeping Dorothy's own tasks and dropping the tests
+  from the hook, faster but still apart from the user's other
+  repositories; running only the affected packages' tests, which waits on
+  the optional Nx trial.
+- **Choice**: The user, on 2026-11-29, asked the repository to conform to
+  `chewygumxx/shared-config`. The standard tasks extend
+  `@chewygumxx/mise-tasks-config`'s templates, and lint and format run
+  `@chewygumxx/hk-config`'s steps through hk, with Dorothy's `secrets`
+  and `skills` steps beside them. hk replaces husky. The agent ruled the
+  rest: pre-commit lints the staged files alone, as `shared-config` does,
+  and the tests run in CI and on `mise run check`; the install hooks stay,
+  registered in git's configuration, since hk cannot load its
+  configuration in a new worktree.
+- **Reason**: hk selects the files, caches each step and stays quiet
+  unless a step fails: a commit of one file lints in about a second, and
+  a change to the shared configuration reaches every repository alike.
+- **Cost**: A commit no longer runs the tests, so a failing test is first
+  seen in CI or by `mise run check`. The shared `cspell`, `knip` and
+  `secretlint` steps are not yet adopted. The shared ShellCheck
+  configuration's optional checks changed ten scripts.
+- **Standing**: current
+  ([build configuration](./topics/build-configuration.md#hk)).
+- **Sources**: the user, 2026-11-29;
+  [report](../reports/2026-11-29_hk-validation.md).
 
 ### A harness's settings are the user's
 

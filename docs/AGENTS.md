@@ -1,6 +1,6 @@
 ---
 ctime: 2026-10-12
-mtime: 2026-11-14
+mtime: 2026-11-29
 spdx: GPL-3.0-only
 title: docs/AGENTS.md
 description: >-
@@ -46,11 +46,11 @@ no date; existing dated paths stay as they are.
 
 - Each file opens with frontmatter (`ctime`, `mtime`, `spdx`, `title`,
   `description`, `tags`) and the breadcrumb comment; copy both from a
-  sibling, and bump `mtime` when you edit. `lint:header` checks the
-  breadcrumb against the file's path.
+  sibling, and bump `mtime` when you edit. The `headers` lint step checks
+  the breadcrumb against the file's path.
 - Lines are at most 80 characters, inline code included: a long command
   goes in a fenced block. Links are Markdown links, never `[[...]]` wiki
-  links. `lint:md` runs remark and markdownlint, which enforce both.
+  links. The `remark` and `markdownlint` lint steps enforce both.
 - A spec says what and why; a plan says how, task by task, with the code.
 - Add each new record to `wiki/records.md` (`docs.test.ts` enforces it);
   a changed decision updates its entry in `wiki/decisions.md`.
