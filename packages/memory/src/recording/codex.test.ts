@@ -554,11 +554,7 @@ describe("Codex non-text content", () => {
 });
 
 describe("Codex unobserved bookkeeping", () => {
-    for (const type of [
-        "agent_reasoning",
-        "turn_aborted",
-        "context_compacted",
-    ]) {
+    for (const type of ["agent_reasoning", "context_compacted"]) {
         it(`reports ${type} once instead of assuming its shape`, () => {
             const read = readCodex([
                 line("event_msg", { type }),

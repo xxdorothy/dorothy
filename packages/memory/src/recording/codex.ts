@@ -39,6 +39,7 @@ const BOOKKEEPING = new Set([
     "event_msg/task_started",
     "event_msg/task_complete",
     "event_msg/thread_settings_applied",
+    "event_msg/turn_aborted",
     "event_msg/token_count",
     "event_msg/user_message",
     "event_msg/agent_message",

@@ -105,6 +105,7 @@ export const bookkeeping = [
         "task_complete",
         "thread_settings_applied",
         "token_count",
+        "turn_aborted",
     ].map((type) => line("event_msg", { type })),
 ];
 
