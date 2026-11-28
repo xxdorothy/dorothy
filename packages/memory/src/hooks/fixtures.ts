@@ -9,7 +9,9 @@
 //
 
 // Payloads hosts send a hook on stdin, as Task 1's probe recorded them
-// (docs/reports/2026-11-01-delivery/probes.md).
+// (docs/reports/2026-11-01-delivery/probes.md). Codex's gained
+// permission_mode, captured live from Codex 0.172.0 on 2026-11-29
+// (docs/reports/2026-11-29_codex-probe.md).
 
 export const CODEX_SESSION_START = {
     session_id: "019a0000-0000-7000-8000-000000000001",
@@ -17,6 +19,7 @@ export const CODEX_SESSION_START = {
     cwd: "/tmp/project",
     hook_event_name: "SessionStart",
     model: "gpt-6.1-sol",
+    permission_mode: "default",
     source: "startup",
 };
 
@@ -27,6 +30,7 @@ export const CODEX_PROMPT = {
     cwd: "/tmp/project",
     hook_event_name: "UserPromptSubmit",
     model: "gpt-6.1-sol",
+    permission_mode: "default",
     prompt: "what did we decide about the engine?",
 };
 
